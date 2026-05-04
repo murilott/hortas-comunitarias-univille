@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": "^8.1",
-        "firebase/php-jwt": "^6.8",
+        "firebase/php-jwt": "^7.0.0",
         "illuminate/database": "^10.0",
         "monolog/monolog": "^3.4",
         "php-di/php-di": "^7.0",
