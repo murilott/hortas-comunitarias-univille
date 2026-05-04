@@ -70,7 +70,8 @@ class AssociacaoService
         
         // Gerar CNPJ temporário se não fornecido (para não violar constraint UNIQUE)
         if (!isset($data['cnpj']) || empty($data['cnpj'])) {
-            $data['cnpj'] = 'TEMP-' . time() . '-' . rand(1000, 9999);
+            // $data['cnpj'] = 'TEMP-' . time() . '-' . rand(1000, 9999); // corrigido, essa geração quebrava o tamanho definido
+            $data['cnpj'] = substr(date('ymdHis') . rand(10, 99), 0, 14);
         }
         
         // Definir valores padrão para campos opcionais
