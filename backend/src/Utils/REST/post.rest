@@ -1,0 +1,60 @@
+// LOGIN
+curl -X POST "http://localhost:8181/api/v1/sessoes/login" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "email": "hortas_comunitarias@univille.br",
+        "senha": "senha12345"
+    }'
+
+###
+
+// Cria um usuário
+curl -X POST http://localhost:8181/api/v1/sessoes/cadastro \
+  -H "Content-Type: application/json" \
+  -d '{
+    "associacao": {
+      "nome": "Associação Teste"
+    },
+    "usuario": {
+      "nome_completo": "João da Silva",
+      "cpf": "12345678909",
+      "email": "joao@email.com",
+      "senha": "123456",
+      "data_de_nascimento": "1995-10-20",
+      "apelido": "joao"
+    }
+  }'
+
+###
+
+// Cria um canteirista
+
+curl -X POST "http://localhost:8181/api/v1/carteiristas" \
+  -H "Authorization: Bearer 
+    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvX3V1aWQiOiJkMzEzOTlmMC00N2VmLTExZjEtYmJhMi05ODI5YTZlM2IxZTEiLCJjYXJnb191dWlkIjoiZDI1NjQ1MzMtNDdlZi0xMWYxLWJiYTItOTgyOWE2ZTNiMWUxIiwiYXNzb2NpYWNhb191dWlkIjpudWxsLCJob3J0YV91dWlkIjpudWxsLCJleHAiOjE3Nzc5NDIwNzd9.ZpK_0qW0TtM0EFimhQDR68zJp2WC4LnZa944ou-bFEQ
+    " \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cpf": "123.456.789-09",
+    "nome_completo": "Lucas Canteirista",
+    "telefone": "(11) 91234-0001",
+    "email": "Lucas.canteirista@example.com",
+    "endereco_uuid": "83077069-47ef-11f1-bba2-9829a6e3b1e1",
+    "horta_uuid": "8317285d-47ef-11f1-bba2-9829a6e3b1e1",
+    "canteiros": [
+      {
+        "uuid": "834a2942-47ef-11f1-bba2-9829a6e3b1e1",
+        "data_atribuicao": "2026-05-04",
+        "percentual_responsabilidade": 100.00,
+        "observacoes": "Canteiro inicial",
+        "ativo": 1
+      },
+      {
+        "uuid": "834a27ab-47ef-11f1-bba2-9829a6e3b1e1",
+        "data_atribuicao": "2026-05-04"
+      }
+    ]
+  }'
+
+###
+

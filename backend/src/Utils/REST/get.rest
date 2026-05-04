@@ -1,0 +1,6 @@
+// GET ALL canteiristas
+curl -X GET "http://localhost:8181/api/v1/carteiristas" \
+    -H "Authorization: Bearer 
+        eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvX3V1aWQiOiJkMzEzOTlmMC00N2VmLTExZjEtYmJhMi05ODI5YTZlM2IxZTEiLCJjYXJnb191dWlkIjoiZDI1NjQ1MzMtNDdlZi0xMWYxLWJiYTItOTgyOWE2ZTNiMWUxIiwiYXNzb2NpYWNhb191dWlkIjpudWxsLCJob3J0YV91dWlkIjpudWxsLCJleHAiOjE3Nzc5NDIwNzd9.ZpK_0qW0TtM0EFimhQDR68zJp2WC4LnZa944ou-bFEQ
+        " \
+    -H "Content-Type: application/json"
