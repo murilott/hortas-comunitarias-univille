@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CarteiristaModel extends Model
 {
-    protected $table = 'carteiristas';
+    protected $table = 'canteiristas';
     protected $primaryKey = 'uuid';
     public $incrementing = false;
     protected $keyType = 'string';
@@ -17,11 +17,16 @@ class CarteiristaModel extends Model
 
     protected $fillable = [
         'uuid',
-        'nome',
+        'cpf',
+        'nome_completo',
         'telefone',
+        'email',
+        'endereco_uuid',
+        'horta_uuid',
         'excluido',
         'usuario_criador_uuid',
         'usuario_alterador_uuid',
+        'usuario_anterior_uuid',
     ];
 
     protected $casts = [
@@ -29,6 +34,16 @@ class CarteiristaModel extends Model
     ];
 
     // Relacionamentos
+    public function endereco()
+    {
+        return $this->belongsTo(EnderecoModel::class, 'endereco_uuid', 'uuid');
+    }
+
+    public function horta()
+    {
+        return $this->belongsTo(HortaModel::class, 'horta_uuid', 'uuid');
+    }
+
     public function usuarioCriador()
     {
         return $this->belongsTo(UsuarioModel::class, 'usuario_criador_uuid', 'uuid');
@@ -37,5 +52,30 @@ class CarteiristaModel extends Model
     public function usuarioAlterador()
     {
         return $this->belongsTo(UsuarioModel::class, 'usuario_alterador_uuid', 'uuid');
+    }
+
+    public function usuarioAnterior()
+    {
+        return $this->belongsTo(UsuarioModel::class, 'usuario_anterior_uuid', 'uuid');
+    }
+
+    public function canteiros()
+    {
+        return $this->belongsToMany(
+            CanteiroModel::class,
+            'canteiristas_canteiros',
+            'canteirista_uuid',
+            'canteiro_uuid'
+        )->withPivot([
+            'uuid',
+            'data_atribuicao',
+            'data_remocao',
+            'percentual_responsabilidade',
+            'observacoes',
+            'ativo',
+            'excluido',
+            'usuario_criador_uuid',
+            'usuario_alterador_uuid',
+        ]);
     }
 }

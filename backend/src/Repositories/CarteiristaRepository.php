@@ -21,9 +21,6 @@ class CarteiristaRepository
 
     public function create(array $data)
     {
-        $data['uuid'] = Uuid::uuid4()->toString();
-        $data['excluido'] = false;
-        
         return CarteiristaModel::create($data);
     }
 

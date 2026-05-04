@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Services\HortaService;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use App\Services\CarteiristaService;
@@ -9,10 +10,12 @@ use App\Services\CarteiristaService;
 class CarteiristaController
 {
     protected CarteiristaService $carteiristaService;
+    protected HortaService $hortaService;
 
-    public function __construct(CarteiristaService $carteiristaService)
+    public function __construct(CarteiristaService $carteiristaService, HortaService $hortaService)
     {
         $this->carteiristaService = $carteiristaService;
+        $this->hortaService = $hortaService;
     }
 
     public function list(Request $request, Response $response)
@@ -25,15 +28,12 @@ class CarteiristaController
         ];
 
         $carteiristas = $this->carteiristaService->findAllWhere($payloadUsuarioLogado);
+        $carteiristas->load('canteiros');
         
         // Formatar resposta
         $carteiristasFormatados = [];
         foreach ($carteiristas as $carteirista) {
-            $carteiristasFormatados[] = [
-                'id' => $carteirista->uuid,
-                'nome' => $carteirista->nome,
-                'telefone' => $carteirista->telefone,
-            ];
+            $carteiristasFormatados[] = $this->formatCarteirista($carteirista);
         }
         
         $response->getBody()->write(json_encode($carteiristasFormatados));
@@ -55,12 +55,10 @@ class CarteiristaController
             $response->getBody()->write(json_encode(['error' => 'Carteirista não encontrado']));
             return $response->withStatus(404);
         }
+        
+        $carteirista->load('canteiros');
 
-        $carteiristaFormatado = [
-            'id' => $carteirista->uuid,
-            'nome' => $carteirista->nome,
-            'telefone' => $carteirista->telefone,
-        ];
+        $carteiristaFormatado = $this->formatCarteirista($carteirista);
 
         $response->getBody()->write(json_encode($carteiristaFormatado));
         return $response->withStatus(200);
@@ -78,12 +76,9 @@ class CarteiristaController
         $data = (array)$request->getParsedBody();
         
         $carteirista = $this->carteiristaService->create($data, $payloadUsuarioLogado);
+        $carteirista->load('canteiros');
 
-        $carteiristaFormatado = [
-            'id' => $carteirista->uuid,
-            'nome' => $carteirista->nome,
-            'telefone' => $carteirista->telefone,
-        ];
+        $carteiristaFormatado = $this->formatCarteirista($carteirista);
 
         $response->getBody()->write(json_encode($carteiristaFormatado));
         return $response->withStatus(201);
@@ -107,14 +102,36 @@ class CarteiristaController
             return $response->withStatus(404);
         }
 
-        $carteiristaFormatado = [
-            'id' => $carteirista->uuid,
-            'nome' => $carteirista->nome,
-            'telefone' => $carteirista->telefone,
-        ];
+        $carteirista->load('canteiros');
+        $carteiristaFormatado = $this->formatCarteirista($carteirista);
 
         $response->getBody()->write(json_encode($carteiristaFormatado));
         return $response->withStatus(200);
+    }
+
+    private function formatCarteirista($carteirista): array
+    {
+        return [
+            'id' => $carteirista->uuid,
+            'nome_completo' => $carteirista->nome_completo,
+            'telefone' => $carteirista->telefone,
+            'cpf' => $carteirista->cpf,
+            'email' => $carteirista->email,
+            'endereco' => $carteirista->endereco_uuid,
+            'horta_vinculada' => $carteirista->horta_uuid,
+            'canteiros' => $carteirista->canteiros->map(function ($canteiro) {
+                return [
+                    'uuid' => $canteiro->uuid,
+                    'numero_identificador' => $canteiro->numero_identificador,
+                    'tamanho_m2' => $canteiro->tamanho_m2,
+                    'data_atribuicao' => $canteiro->pivot->data_atribuicao,
+                    'data_remocao' => $canteiro->pivot->data_remocao,
+                    'percentual_responsabilidade' => $canteiro->pivot->percentual_responsabilidade,
+                    'observacoes' => $canteiro->pivot->observacoes,
+                    'ativo' => $canteiro->pivot->ativo,
+                ];
+            })->all(),
+        ];
     }
 
     public function delete(Request $request, Response $response, array $args)
