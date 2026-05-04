@@ -253,6 +253,29 @@ CREATE TABLE permissoes_de_excecao (
     FOREIGN KEY (usuario_alterador_uuid) REFERENCES usuarios(uuid)
 );
 
+-- Canteiristas
+CREATE TABLE canteiristas (
+    uuid CHAR(36) NOT NULL,
+    cpf VARCHAR(14) NOT NULL,
+    nome_completo VARCHAR(255) NOT NULL,
+    telefone VARCHAR(25) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    endereco_uuid CHAR(36) NOT NULL,
+    horta_uuid CHAR(36) NOT NULL,
+    excluido TINYINT DEFAULT 0,
+    usuario_criador_uuid CHAR(36),
+    data_de_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    usuario_alterador_uuid CHAR(36),
+    data_de_ultima_alteracao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    usuario_anterior_uuid CHAR(36),
+    PRIMARY KEY (uuid),
+    FOREIGN KEY (endereco_uuid) REFERENCES enderecos(uuid),
+    FOREIGN KEY (horta_uuid) REFERENCES hortas(uuid),
+    FOREIGN KEY (usuario_criador_uuid) REFERENCES usuarios(uuid),
+    FOREIGN KEY (usuario_alterador_uuid) REFERENCES usuarios(uuid),
+    FOREIGN KEY (usuario_anterior_uuid) REFERENCES usuarios(uuid)
+);
+
 -- Canteiros
 CREATE TABLE canteiros (
     uuid CHAR(36) NOT NULL,
@@ -271,6 +294,29 @@ CREATE TABLE canteiros (
     FOREIGN KEY (usuario_criador_uuid) REFERENCES usuarios(uuid),
     FOREIGN KEY (usuario_alterador_uuid) REFERENCES usuarios(uuid),
     FOREIGN KEY (usuario_anterior_uuid) REFERENCES usuarios(uuid)
+);
+
+-- Canteiristas e canteiros (relacionamento muitos-para-muitos)
+CREATE TABLE canteiristas_canteiros (
+    uuid CHAR(36) NOT NULL,
+    canteirista_uuid CHAR(36) NOT NULL,
+    canteiro_uuid CHAR(36) NOT NULL,
+    data_atribuicao DATE NOT NULL,
+    data_remocao DATE,
+    percentual_responsabilidade DECIMAL(5,2) DEFAULT 100.00,
+    observacoes TEXT,
+    ativo TINYINT DEFAULT 1,
+    excluido TINYINT DEFAULT 0,
+    usuario_criador_uuid CHAR(36),
+    data_de_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    usuario_alterador_uuid CHAR(36),
+    data_de_ultima_alteracao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (uuid),
+    UNIQUE KEY unique_canteirista_canteiro (canteirista_uuid, canteiro_uuid, data_atribuicao),
+    FOREIGN KEY (canteirista_uuid) REFERENCES canteiristas(uuid),
+    FOREIGN KEY (canteiro_uuid) REFERENCES canteiros(uuid),
+    FOREIGN KEY (usuario_criador_uuid) REFERENCES usuarios(uuid),
+    FOREIGN KEY (usuario_alterador_uuid) REFERENCES usuarios(uuid)
 );
 
 -- Canteiros e usuários (relacionamento)
@@ -465,6 +511,10 @@ CREATE INDEX idx_canteiros_horta ON canteiros(horta_uuid);
 CREATE INDEX idx_canteiros_usuarios_canteiro ON canteiros_e_usuarios(canteiro_uuid);
 CREATE INDEX idx_canteiros_usuarios_usuario ON canteiros_e_usuarios(usuario_uuid);
 
+CREATE INDEX idx_canteiristas_canteiros_canteirista ON canteiristas_canteiros(canteirista_uuid);
+CREATE INDEX idx_canteiristas_canteiros_canteiro ON canteiristas_canteiros(canteiro_uuid);
+CREATE INDEX idx_canteiristas_canteiros_ativo ON canteiristas_canteiros(ativo);
+
 CREATE INDEX idx_mensalidades_plataforma_usuario ON mensalidades_da_plataforma(usuario_uuid);
 CREATE INDEX idx_mensalidades_plataforma_vencimento ON mensalidades_da_plataforma(data_vencimento);
 CREATE INDEX idx_mensalidades_associacao_usuario ON mensalidades_da_associacao(usuario_uuid);
@@ -483,6 +533,8 @@ SET FOREIGN_KEY_CHECKS = 1;
 ALTER TABLE usuarios COMMENT = 'Tabela principal de usuários do sistema';
 ALTER TABLE associacoes COMMENT = 'Tabela de associações/cooperativas';
 ALTER TABLE hortas COMMENT = 'Tabela de hortas comunitárias';
+ALTER TABLE canteiristas COMMENT = 'Responsável pelos canteiros de uma horta';
+ALTER TABLE canteiristas_canteiros COMMENT = 'Relacionamento entre canteiristas e canteiros';
 ALTER TABLE canteiros COMMENT = 'Canteiros individuais dentro das hortas';
 ALTER TABLE canteiros_e_usuarios COMMENT = 'Relacionamento entre canteiros e usuários responsáveis';
 ALTER TABLE enderecos COMMENT = 'Endereços utilizados por usuários, associações e hortas';

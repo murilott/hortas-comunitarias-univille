@@ -56,6 +56,22 @@ INSERT INTO permissoes VALUES
 (UUID(), 'canteiros_put', 2, 'Editar canteiro', 4, 0, NULL, NOW(), NULL, NOW()),
 (UUID(), 'canteiros_delete', 3, 'Deletar canteiro', 4, 0, NULL, NOW(), NULL, NOW());
 
+-- ================= CANTEIRISTAS =================
+INSERT INTO permissoes VALUES
+(UUID(), 'canteiristas_get', 0, 'Listar canteiristas', 20, 0, NULL, NOW(), NULL, NOW()),
+(UUID(), 'canteiristas_get_uuid', 0, 'Buscar canteirista por UUID', 20, 0, NULL, NOW(), NULL, NOW()),
+(UUID(), 'canteiristas_post', 1, 'Criar canteirista', 20, 0, NULL, NOW(), NULL, NOW()),
+(UUID(), 'canteiristas_put', 2, 'Editar canteirista', 20, 0, NULL, NOW(), NULL, NOW()),
+(UUID(), 'canteiristas_delete', 3, 'Deletar canteirista', 20, 0, NULL, NOW(), NULL, NOW());
+
+-- ================= CANTEIRISTAS E CANTEIROS =================
+INSERT INTO permissoes VALUES
+(UUID(), 'canteiristas_canteiros_get', 0, 'Listar canteiristas e canteiros', 21, 0, NULL, NOW(), NULL, NOW()),
+(UUID(), 'canteiristas_canteiros_get_uuid', 0, 'Buscar canteirista e canteiro por UUID', 21, 0, NULL, NOW(), NULL, NOW()),
+(UUID(), 'canteiristas_canteiros_post', 1, 'Criar relação canteirista e canteiro', 21, 0, NULL, NOW(), NULL, NOW()),
+(UUID(), 'canteiristas_canteiros_put', 2, 'Editar relação canteirista e canteiro', 21, 0, NULL, NOW(), NULL, NOW()),
+(UUID(), 'canteiristas_canteiros_delete', 3, 'Deletar relação canteirista e canteiro', 21, 0, NULL, NOW(), NULL, NOW());
+
 -- ================= CARGOS =================
 INSERT INTO permissoes VALUES
 (UUID(), 'cargos_get', 0, 'Listar cargos', 6, 0, NULL, NOW(), NULL, NOW()),
@@ -232,6 +248,10 @@ AND p.slug IN (
     'canteiros_get', 'canteiros_get_uuid', 'canteiros_post', 'canteiros_put', 'canteiros_delete',
     -- Canteiros e Usuarios
     'canteiros_e_usuarios_get', 'canteiros_e_usuarios_get_uuid', 'canteiros_e_usuarios_post', 'canteiros_e_usuarios_put', 'canteiros_e_usuarios_delete',
+    -- Canteiristas (completo)
+    'canteiristas_get', 'canteiristas_get_uuid', 'canteiristas_post', 'canteiristas_put', 'canteiristas_delete',
+    -- Canteiristas e Canteiros (completo)
+    'canteiristas_canteiros_get', 'canteiristas_canteiros_get_uuid', 'canteiristas_canteiros_post', 'canteiristas_canteiros_put', 'canteiristas_canteiros_delete',
     -- Cargos (somente leitura)
     'cargos_get', 'cargos_get_uuid',
     -- Permissoes de Cargo (somente leitura)
@@ -278,6 +298,10 @@ AND p.slug IN (
     'canteiros_get', 'canteiros_get_uuid', 'canteiros_post', 'canteiros_put', 'canteiros_delete',
     -- Canteiros e Usuarios
     'canteiros_e_usuarios_get', 'canteiros_e_usuarios_get_uuid', 'canteiros_e_usuarios_post', 'canteiros_e_usuarios_put', 'canteiros_e_usuarios_delete',
+    -- Canteiristas (completo)
+    'canteiristas_get', 'canteiristas_get_uuid', 'canteiristas_post', 'canteiristas_put', 'canteiristas_delete',
+    -- Canteiristas e Canteiros (completo)
+    'canteiristas_canteiros_get', 'canteiristas_canteiros_get_uuid', 'canteiristas_canteiros_post', 'canteiristas_canteiros_put', 'canteiristas_canteiros_delete',
     -- Cargos (somente leitura)
     'cargos_get', 'cargos_get_uuid',
     -- Permissoes do Usuario
@@ -307,6 +331,10 @@ AND p.slug IN (
     'canteiros_get', 'canteiros_get_uuid',
     -- Canteiros e Usuarios (somente leitura)
     'canteiros_e_usuarios_get', 'canteiros_e_usuarios_get_uuid',
+    -- Canteiristas (completo)
+    'canteiristas_get', 'canteiristas_get_uuid', 'canteiristas_post', 'canteiristas_put', 'canteiristas_delete',
+    -- Canteiristas e Canteiros (completo)
+    'canteiristas_canteiros_get', 'canteiristas_canteiros_get_uuid', 'canteiristas_canteiros_post', 'canteiristas_canteiros_put', 'canteiristas_canteiros_delete',
     -- Permissoes do Usuario
     'permissoes_do_usuario_get',
     -- Financeiro da Horta (somente leitura)

@@ -224,6 +224,25 @@ VALUES
 (UUID(), 'C-002', 30.00, @ultimaHorta2, NULL, 0, @ultimoUsuario, @ultimoUsuario),
 (UUID(), 'C-003', 20.75, @ultimaHorta2, @ultimoUsuario, 0, @ultimoUsuario, @ultimoUsuario);
 
+-- ================= CANTEIRISTAS =================
+INSERT INTO canteiristas (uuid, cpf, nome_completo, telefone, email, endereco_uuid, horta_uuid, excluido, usuario_criador_uuid, usuario_alterador_uuid)
+VALUES
+(UUID(), '555.555.555-15', 'Pedro Canteiro SP', '(11) 99999-0001', 'canteirista_1@example.com', (SELECT e.uuid FROM enderecos e WHERE e.cidade = 'São Paulo' LIMIT 1), @ultimaHorta1, 0, @ultimoUsuario, @ultimoUsuario),
+(UUID(), '666.666.666-66', 'Julia Canteiro RJ', '(21) 99999-0002', 'canteirista_2@example.com', (SELECT e.uuid FROM enderecos e WHERE e.cidade = 'Rio de Janeiro' LIMIT 1), @ultimaHorta2, 0, @ultimoUsuario, @ultimoUsuario);
+
+-- ================= CANTEIRISTAS E CANTEIROS =================
+SET @canteirista1 = (SELECT ct.uuid FROM canteiristas ct WHERE ct.email = 'canteirista_1@example.com');
+SET @canteirista2 = (SELECT ct.uuid FROM canteiristas ct WHERE ct.email = 'canteirista_2@example.com');
+SET @canteiro1 = (SELECT c.uuid FROM canteiros c WHERE c.numero_identificador = 'C-001');
+SET @canteiro2 = (SELECT c.uuid FROM canteiros c WHERE c.numero_identificador = 'C-002');
+SET @canteiro3 = (SELECT c.uuid FROM canteiros c WHERE c.numero_identificador = 'C-003');
+
+INSERT INTO canteiristas_canteiros (uuid, canteirista_uuid, canteiro_uuid, data_atribuicao, data_remocao, percentual_responsabilidade, observacoes, ativo, excluido, usuario_criador_uuid, usuario_alterador_uuid)
+VALUES
+(UUID(), @canteirista1, @canteiro1, CURDATE(), NULL, 100.00, 'Responsável principal pelo canteiro C-001', 1, 0, @ultimoUsuario, @ultimoUsuario),
+(UUID(), @canteirista2, @canteiro2, CURDATE(), NULL, 100.00, 'Responsável principal pelo canteiro C-002', 1, 0, @ultimoUsuario, @ultimoUsuario),
+(UUID(), @canteirista2, @canteiro3, CURDATE(), NULL, 50.00, 'Compartilha responsabilidade com outro canteirista no C-003', 1, 0, @ultimoUsuario, @ultimoUsuario);
+
 -- ================= CANTEIROS E USUÁRIOS =================
 SET @ultimoCanteiro1 = (SELECT c.uuid FROM canteiros c ORDER BY c.data_de_criacao DESC LIMIT 1 OFFSET 2);
 SET @ultimoCanteiro2 = (SELECT c.uuid FROM canteiros c ORDER BY c.data_de_criacao DESC LIMIT 1 OFFSET 1);
