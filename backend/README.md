@@ -97,6 +97,43 @@ API_VERSION=v1
 
 ---
 
+## 💾 Setup sem Docker
+
+Para rodar localmente sem Docker, é preciso estar instalado:
+- PHP
+- PHP Composer
+- MySQL
+- NodeJS e NPM
+- HeidiSQL (opcional)
+
+### Rodando o backend
+
+1. Execute os seguintes comandos no diretório raiz para instalar as dependências:
+
+```bash
+cd backend
+compose install
+```
+
+2. Duplique a .env.example, renomeie para .env e cole os conteúdos do outro setup acima.  
+
+3. Crie o banco pelo Heidi ou pela linha de comando.  
+
+4. Rode a criação das tabelas e dos dados iniciais
+
+```bash
+php run-migrations.php
+php run-seeds.php
+```
+
+5. Inicie o backend.
+
+```bash
+php -S localhost:8181 -t public public/index.php
+```
+
+---
+
 ## 🐋 Comandos úteis do Docker 
 
 Limpar containers e imagens, no terminal do Windows (Powershell).
