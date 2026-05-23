@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\CarteiristaModel;
 use App\Repositories\CanteiroRepository;
 use App\Repositories\CarteiristaRepository;
+use App\Repositories\CargoRepository;
 use Exception;
 use Ramsey\Uuid\Nonstandard\Uuid;
 
@@ -13,15 +14,21 @@ class CarteiristaService
     protected CarteiristaRepository $carteiristaRepository;
     protected CanteiroRepository $canteiroRepository;
     protected HortaService $HortaService;
+    protected CargoRepository $cargoRepository;
+    protected UsuarioService $usuarioService;
 
     public function __construct(CarteiristaRepository $carteiristaRepository, 
         CanteiroRepository $canteiroRepository,
-        HortaService $HortaService
+        HortaService $HortaService,
+        CargoRepository $cargoRepository,
+        UsuarioService $usuarioService
     )
     {
         $this->carteiristaRepository = $carteiristaRepository;
         $this->canteiroRepository = $canteiroRepository;
         $this->HortaService = $HortaService;
+        $this->cargoRepository = $cargoRepository;
+        $this->usuarioService = $usuarioService;
     }
 
     public function findAllWhere(array $payloadUsuarioLogado)
@@ -44,11 +51,19 @@ class CarteiristaService
         $canteiros = $data['canteiros'] ?? [];
         unset($data['canteiros']);
 
-        $guarded = ['uuid','usuario_criador_uuid','data_de_criacao','data_de_ultima_alteracao'];
+        $usuarioData = [
+            'nome_completo' => $data['nome_completo'] ?? null,
+            'cpf' => $data['cpf'] ?? null,
+            'email' => $data['email'] ?? null,
+            'senha' => $data['senha'] ?? null,
+            'data_de_nascimento' => $data['data_de_nascimento'] ?? null,
+            'apelido' => $data['apelido'] ?? null,
+        ];
+
+        $guarded = ['uuid','usuario_criador_uuid','data_de_criacao','data_de_ultima_alteracao', 'usuario_uuid'];
         foreach ($guarded as $g) unset($data[$g]);
 
         // Validações básicas
-
         $horta = $this->HortaService->findByUuid($data['horta_uuid'], $payloadUsuarioLogado);
 
         if (!$horta) {
@@ -68,10 +83,31 @@ class CarteiristaService
             throw new Exception("Horta é obrigatória");
         }
         
+        // Validar dados do usuário
+        if (empty($usuarioData['email'])) {
+            throw new Exception("Email é obrigatório para criar o usuário");
+        }
+        if (empty($usuarioData['senha'])) {
+            throw new Exception("Senha é obrigatória para criar o usuário");
+        }
+        if (empty($usuarioData['data_de_nascimento'])) {
+            throw new Exception("Data de nascimento é obrigatória para criar o usuário");
+        }
+        if (empty($usuarioData['apelido'])) {
+            throw new Exception("Apelido é obrigatório para criar o usuário");
+        }
+
+        $cargo = $this->cargoRepository->findAllWhere(['slug' => 'canteirista'])->first();
+        if ($cargo) {
+            $usuarioData['cargo_uuid'] = $cargo->uuid;
+        }
+
+        $usuario = $this->usuarioService->create($usuarioData, $payloadUsuarioLogado['usuario_uuid'], $payloadUsuarioLogado);
+        
         $data['uuid'] = Uuid::uuid1()->toString();
-        // Adiciona o UUID do usuário criador
         $data['usuario_criador_uuid'] =  $payloadUsuarioLogado['usuario_uuid'];
         $data['usuario_alterador_uuid'] =  $payloadUsuarioLogado['usuario_uuid'];
+        $data['usuario_uuid'] = $usuario->uuid;
         $data['excluido'] = 0;
         
         $carteirista = $this->carteiristaRepository->create($data);
@@ -97,6 +133,7 @@ class CarteiristaService
         // Remove campos que não devem ser atualizados
         unset($data['uuid']);
         unset($data['usuario_criador_uuid']);
+        unset($data['usuario_uuid']);
         unset($data['data_de_criacao']);
         
         $carteirista = $this->carteiristaRepository->update($uuid, $data);
@@ -151,6 +188,13 @@ class CarteiristaService
     public function delete(string $uuid, array $payloadUsuarioLogado)
     {
         // TODO: Implementar verificação de permissões quando necessário
+        
+        $carteirista = $this->carteiristaRepository->findByUuid($uuid);
+        
+        if (!$carteirista) {
+            throw new Exception("Canteirista não encontrado");
+        }
+        
         return $this->carteiristaRepository->delete($uuid);
     }
 }

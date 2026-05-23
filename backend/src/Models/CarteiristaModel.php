@@ -23,6 +23,7 @@ class CarteiristaModel extends Model
         'email',
         'endereco_uuid',
         'horta_uuid',
+        'usuario_uuid',
         'excluido',
         'usuario_criador_uuid',
         'usuario_alterador_uuid',
@@ -57,6 +58,11 @@ class CarteiristaModel extends Model
     public function usuarioAnterior()
     {
         return $this->belongsTo(UsuarioModel::class, 'usuario_anterior_uuid', 'uuid');
+    }
+
+    public function usuario()
+    {
+        return $this->belongsTo(UsuarioModel::class, 'usuario_uuid', 'uuid');
     }
 
     public function canteiros()

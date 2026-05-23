@@ -262,6 +262,7 @@ CREATE TABLE canteiristas (
     email VARCHAR(255) NOT NULL,
     endereco_uuid CHAR(36) NOT NULL,
     horta_uuid CHAR(36) NOT NULL,
+    usuario_uuid CHAR(36),
     excluido TINYINT DEFAULT 0,
     usuario_criador_uuid CHAR(36),
     data_de_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -271,6 +272,7 @@ CREATE TABLE canteiristas (
     PRIMARY KEY (uuid),
     FOREIGN KEY (endereco_uuid) REFERENCES enderecos(uuid),
     FOREIGN KEY (horta_uuid) REFERENCES hortas(uuid),
+    FOREIGN KEY (usuario_uuid) REFERENCES usuarios(uuid),
     FOREIGN KEY (usuario_criador_uuid) REFERENCES usuarios(uuid),
     FOREIGN KEY (usuario_alterador_uuid) REFERENCES usuarios(uuid),
     FOREIGN KEY (usuario_anterior_uuid) REFERENCES usuarios(uuid)

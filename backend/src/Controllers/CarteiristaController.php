@@ -119,6 +119,7 @@ class CarteiristaController
             'email' => $carteirista->email,
             'endereco' => $carteirista->endereco_uuid,
             'horta_vinculada' => $carteirista->horta_uuid,
+            'usuario_uuid' => $carteirista->usuario_uuid,
             'canteiros' => $carteirista->canteiros->map(function ($canteiro) {
                 return [
                     'uuid' => $canteiro->uuid,
