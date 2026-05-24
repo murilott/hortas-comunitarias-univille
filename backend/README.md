@@ -104,7 +104,7 @@ Para rodar localmente sem Docker, é preciso estar instalado:
 - PHP Composer
 - MySQL
 - NodeJS e NPM
-- HeidiSQL (opcional)
+- HeidiSQL ou similar (opcional)
 
 ### Rodando o backend
 
@@ -117,7 +117,7 @@ compose install
 
 2. Duplique a .env.example, renomeie para .env e cole os conteúdos do outro setup acima.  
 
-3. Crie o banco pelo Heidi ou pela linha de comando.  
+3. Crie o banco pelo Heidi ou pela linha de comando, usando o nome que está no .env.  
 
 4. Rode a criação das tabelas e dos dados iniciais
 
