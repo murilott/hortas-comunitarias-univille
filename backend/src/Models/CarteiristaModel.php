@@ -74,10 +74,6 @@ class CarteiristaModel extends Model
             'canteiro_uuid'
         )->withPivot([
             'uuid',
-            'data_atribuicao',
-            'data_remocao',
-            'percentual_responsabilidade',
-            'observacoes',
             'ativo',
             'excluido',
             'usuario_criador_uuid',

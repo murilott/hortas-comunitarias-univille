@@ -9,13 +9,7 @@ curl -X PUT "http://localhost:8181/api/v1/carteiristas/c8165c36-47fe-11f1-83d9-9
     "telefone": "(11) 99999-0002",
     "email": "pedro.atualizado@example.com",
     "canteiros": [
-      {
-        "uuid": "834a23ad-47ef-11f1-bba2-9829a6e3b1e1",
-        "data_atribuicao": "2026-05-04",
-        "percentual_responsabilidade": 100.00,
-        "observacoes": "Responsável pelo canteiro A",
-        "ativo": 1
-      }
+      "834a23ad-47ef-11f1-bba2-9829a6e3b1e1"
     ]
   }'
 

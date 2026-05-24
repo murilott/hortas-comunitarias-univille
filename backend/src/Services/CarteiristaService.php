@@ -102,7 +102,7 @@ class CarteiristaService
             $usuarioData['cargo_uuid'] = $cargo->uuid;
         }
 
-        $usuario = $this->usuarioService->create($usuarioData, $payloadUsuarioLogado['usuario_uuid'], $payloadUsuarioLogado);
+        $usuario = $this->usuarioService->create($usuarioData, "NEW_ACCOUNT", $payloadUsuarioLogado);
         
         $data['uuid'] = Uuid::uuid1()->toString();
         $data['usuario_criador_uuid'] =  $payloadUsuarioLogado['usuario_uuid'];
@@ -150,32 +150,25 @@ class CarteiristaService
     {
         $syncData = [];
 
-        foreach ($canteiros as $canteiro) {
-            $cant = $this->canteiroRepository->findByUuid($canteiro['uuid']);
-        
+        // agora $canteiros é um array simples de UUIDs de canteiro
+        foreach ($canteiros as $canteiroUuid) {
+            $cant = $this->canteiroRepository->findByUuid($canteiroUuid);
+
             if (!$cant) {
-                throw new Exception("Canteiro não encontrada");
+                throw new Exception("Canteiro não encontrado: $canteiroUuid");
             }
 
-            if (empty($canteiro['uuid'])) {
+            if (empty($canteiroUuid)) {
                 throw new Exception('UUID do canteiro é obrigatório em cada entrada de canteiros.');
-            }
-
-            if (empty($canteiro['data_atribuicao'])) {
-                throw new Exception('data_atribuicao é obrigatória em cada entrada de canteiros.');
             }
 
             if ($cant['horta_uuid'] !== $carteirista->horta_uuid) {
                 throw new Exception('O canteiro a ser adicionado deve pertencer à mesma horta do carteirista.');
             }
 
-            $syncData[$canteiro['uuid']] = [
+            $syncData[$canteiroUuid] = [
                 'uuid' => Uuid::uuid1()->toString(),
-                'data_atribuicao' => $canteiro['data_atribuicao'],
-                'data_remocao' => $canteiro['data_remocao'] ?? null,
-                'percentual_responsabilidade' => $canteiro['percentual_responsabilidade'] ?? 100.00,
-                'observacoes' => $canteiro['observacoes'] ?? null,
-                'ativo' => array_key_exists('ativo', $canteiro) ? $canteiro['ativo'] : 1,
+                'ativo' => 1,
                 'excluido' => 0,
                 'usuario_criador_uuid' => $usuarioUuid,
                 'usuario_alterador_uuid' => $usuarioUuid,

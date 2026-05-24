@@ -125,11 +125,7 @@ class CarteiristaController
                     'uuid' => $canteiro->uuid,
                     'numero_identificador' => $canteiro->numero_identificador,
                     'tamanho_m2' => $canteiro->tamanho_m2,
-                    'data_atribuicao' => $canteiro->pivot->data_atribuicao,
-                    'data_remocao' => $canteiro->pivot->data_remocao,
-                    'percentual_responsabilidade' => $canteiro->pivot->percentual_responsabilidade,
-                    'observacoes' => $canteiro->pivot->observacoes,
-                    'ativo' => $canteiro->pivot->ativo,
+                    'ativo' => $canteiro->pivot->ativo ?? 1,
                 ];
             })->all(),
         ];

@@ -298,15 +298,11 @@ CREATE TABLE canteiros (
     FOREIGN KEY (usuario_anterior_uuid) REFERENCES usuarios(uuid)
 );
 
--- Canteiristas e canteiros (relacionamento muitos-para-muitos)
+-- Canteiristas e canteiros
 CREATE TABLE canteiristas_canteiros (
     uuid CHAR(36) NOT NULL,
     canteirista_uuid CHAR(36) NOT NULL,
     canteiro_uuid CHAR(36) NOT NULL,
-    data_atribuicao DATE NOT NULL,
-    data_remocao DATE,
-    percentual_responsabilidade DECIMAL(5,2) DEFAULT 100.00,
-    observacoes TEXT,
     ativo TINYINT DEFAULT 1,
     excluido TINYINT DEFAULT 0,
     usuario_criador_uuid CHAR(36),
@@ -314,7 +310,7 @@ CREATE TABLE canteiristas_canteiros (
     usuario_alterador_uuid CHAR(36),
     data_de_ultima_alteracao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (uuid),
-    UNIQUE KEY unique_canteirista_canteiro (canteirista_uuid, canteiro_uuid, data_atribuicao),
+    UNIQUE KEY unique_canteirista_canteiro (canteirista_uuid, canteiro_uuid),
     FOREIGN KEY (canteirista_uuid) REFERENCES canteiristas(uuid),
     FOREIGN KEY (canteiro_uuid) REFERENCES canteiros(uuid),
     FOREIGN KEY (usuario_criador_uuid) REFERENCES usuarios(uuid),

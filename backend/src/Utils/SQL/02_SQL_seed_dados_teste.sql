@@ -237,11 +237,11 @@ SET @canteiro1 = (SELECT c.uuid FROM canteiros c WHERE c.numero_identificador = 
 SET @canteiro2 = (SELECT c.uuid FROM canteiros c WHERE c.numero_identificador = 'C-002');
 SET @canteiro3 = (SELECT c.uuid FROM canteiros c WHERE c.numero_identificador = 'C-003');
 
-INSERT INTO canteiristas_canteiros (uuid, canteirista_uuid, canteiro_uuid, data_atribuicao, data_remocao, percentual_responsabilidade, observacoes, ativo, excluido, usuario_criador_uuid, usuario_alterador_uuid)
+INSERT INTO canteiristas_canteiros (uuid, canteirista_uuid, canteiro_uuid, ativo, excluido, usuario_criador_uuid, usuario_alterador_uuid)
 VALUES
-(UUID(), @canteirista1, @canteiro1, CURDATE(), NULL, 100.00, 'Responsável principal pelo canteiro C-001', 1, 0, @ultimoUsuario, @ultimoUsuario),
-(UUID(), @canteirista2, @canteiro2, CURDATE(), NULL, 100.00, 'Responsável principal pelo canteiro C-002', 1, 0, @ultimoUsuario, @ultimoUsuario),
-(UUID(), @canteirista2, @canteiro3, CURDATE(), NULL, 50.00, 'Compartilha responsabilidade com outro canteirista no C-003', 1, 0, @ultimoUsuario, @ultimoUsuario);
+(UUID(), @canteirista1, @canteiro1, 1, 0, @ultimoUsuario, @ultimoUsuario),
+(UUID(), @canteirista2, @canteiro2, 1, 0, @ultimoUsuario, @ultimoUsuario),
+(UUID(), @canteirista2, @canteiro3, 1, 0, @ultimoUsuario, @ultimoUsuario);
 
 -- ================= CANTEIROS E USUÁRIOS =================
 SET @ultimoCanteiro1 = (SELECT c.uuid FROM canteiros c ORDER BY c.data_de_criacao DESC LIMIT 1 OFFSET 2);

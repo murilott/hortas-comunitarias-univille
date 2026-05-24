@@ -31,28 +31,22 @@ curl -X POST http://localhost:8181/api/v1/sessoes/cadastro \
 
 curl -X POST "http://localhost:8181/api/v1/carteiristas" \
   -H "Authorization: Bearer 
-    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvX3V1aWQiOiJkMzEzOTlmMC00N2VmLTExZjEtYmJhMi05ODI5YTZlM2IxZTEiLCJjYXJnb191dWlkIjoiZDI1NjQ1MzMtNDdlZi0xMWYxLWJiYTItOTgyOWE2ZTNiMWUxIiwiYXNzb2NpYWNhb191dWlkIjpudWxsLCJob3J0YV91dWlkIjpudWxsLCJleHAiOjE3Nzc5NDIwNzd9.ZpK_0qW0TtM0EFimhQDR68zJp2WC4LnZa944ou-bFEQ
+    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvX3V1aWQiOiJlYjNhODJhMS01NmZkLTExZjEtODZlNS05ODI5YTZlM2IxZTEiLCJjYXJnb191dWlkIjoiZWE3ZTNkZmMtNTZmZC0xMWYxLTg2ZTUtOTgyOWE2ZTNiMWUxIiwiYXNzb2NpYWNhb191dWlkIjpudWxsLCJob3J0YV91dWlkIjpudWxsLCJleHAiOjE3Nzk1ODYxMjZ9.lOmyNA0ncveQ9ILMJT5trXdSeaPILn1uvD7Iev5zsgU
     " \
   -H "Content-Type: application/json" \
   -d '{
-    "cpf": "123.456.789-09",
-    "nome_completo": "Lucas Canteirista",
+    "cpf": "52998224725",
+    "nome_completo": "Lucas Canteirista 3",
     "telefone": "(11) 91234-0001",
-    "email": "Lucas.canteirista@example.com",
-    "endereco_uuid": "83077069-47ef-11f1-bba2-9829a6e3b1e1",
-    "horta_uuid": "8317285d-47ef-11f1-bba2-9829a6e3b1e1",
+    "email": "lucas.canteirista3@example.com",
+    "senha": "SenhaSegura123",
+    "data_de_nascimento": "1990-08-20",
+    "apelido": "lucas",
+    "endereco_uuid": "b8c6db73-56fd-11f1-86e5-9829a6e3b1e1",
+    "horta_uuid": "b8d47acc-56fd-11f1-86e5-9829a6e3b1e1",
     "canteiros": [
-      {
-        "uuid": "834a2942-47ef-11f1-bba2-9829a6e3b1e1",
-        "data_atribuicao": "2026-05-04",
-        "percentual_responsabilidade": 100.00,
-        "observacoes": "Canteiro inicial",
-        "ativo": 1
-      },
-      {
-        "uuid": "834a27ab-47ef-11f1-bba2-9829a6e3b1e1",
-        "data_atribuicao": "2026-05-04"
-      }
+      "b901d7e9-56fd-11f1-86e5-9829a6e3b1e1",
+      "b901dc51-56fd-11f1-86e5-9829a6e3b1e1"
     ]
   }'
 
