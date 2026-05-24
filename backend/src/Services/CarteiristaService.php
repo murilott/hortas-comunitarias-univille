@@ -123,9 +123,17 @@ class CarteiristaService
     public function update(string $uuid, array $data, array $payloadUsuarioLogado)
     {
         // TODO: Implementar verificação de permissões quando necessário
-        
+
         $canteiros = $data['canteiros'] ?? [];
         unset($data['canteiros']);
+
+        $usuarioData = [];
+        foreach (['nome_completo', 'cpf', 'email', 'senha', 'data_de_nascimento', 'apelido', 'endereco_uuid'] as $field) {
+            if (array_key_exists($field, $data)) {
+                $usuarioData[$field] = $data[$field];
+                unset($data[$field]);
+            }
+        }
 
         // Adiciona o UUID do usuário alterador
         $data['usuario_alterador_uuid'] = $payloadUsuarioLogado['usuario_uuid'];
@@ -136,6 +144,20 @@ class CarteiristaService
         unset($data['usuario_uuid']);
         unset($data['data_de_criacao']);
         
+        $carteirista = $this->carteiristaRepository->findByUuid($uuid);
+        if (!$carteirista) {
+            return null;
+        }
+
+        if (!empty($usuarioData) && !empty($carteirista->usuario_uuid)) {
+            $this->usuarioService->update(
+                $carteirista->usuario_uuid,
+                $usuarioData,
+                $payloadUsuarioLogado['usuario_uuid'],
+                $payloadUsuarioLogado
+            );
+        }
+
         $carteirista = $this->carteiristaRepository->update($uuid, $data);
 
         if ($carteirista && !empty($canteiros)) {

@@ -1,15 +1,16 @@
 // Atualiza um canteirista
-curl -X PUT "http://localhost:8181/api/v1/carteiristas/c8165c36-47fe-11f1-83d9-9829a6e3b1e1" \
+curl -X PUT "http://localhost:8181/api/v1/carteiristas/4f39c81c-5707-11f1-a047-9829a6e3b1e1" \
   -H "Authorization: Bearer 
-    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvX3V1aWQiOiJkMzEzOTlmMC00N2VmLTExZjEtYmJhMi05ODI5YTZlM2IxZTEiLCJjYXJnb191dWlkIjoiZDI1NjQ1MzMtNDdlZi0xMWYxLWJiYTItOTgyOWE2ZTNiMWUxIiwiYXNzb2NpYWNhb191dWlkIjpudWxsLCJob3J0YV91dWlkIjpudWxsLCJleHAiOjE3Nzc5NDIwNzd9.ZpK_0qW0TtM0EFimhQDR68zJp2WC4LnZa944ou-bFEQ
+    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvX3V1aWQiOiJlYjNhODJhMS01NmZkLTExZjEtODZlNS05ODI5YTZlM2IxZTEiLCJjYXJnb191dWlkIjoiZWE3ZTNkZmMtNTZmZC0xMWYxLTg2ZTUtOTgyOWE2ZTNiMWUxIiwiYXNzb2NpYWNhb191dWlkIjpudWxsLCJob3J0YV91dWlkIjpudWxsLCJleHAiOjE3Nzk1OTIwMjF9.yAQ-jVN7C6lLxKY2BRRBImCqxyBy78CH9metxoZyOvk
     " \
   -H "Content-Type: application/json" \
   -d '{
-    "nome_completo": "Pedro Canteirista Atualizado",
+    "nome_completo": "Lucas Canteirista 3 Atualizado",
     "telefone": "(11) 99999-0002",
-    "email": "pedro.atualizado@example.com",
+    "email": "lucas.canteirista3@example.com",
+    "apelido": "lucas_atualizado",
     "canteiros": [
-      "834a23ad-47ef-11f1-bba2-9829a6e3b1e1"
+      "b901d7e9-56fd-11f1-86e5-9829a6e3b1e1"
     ]
   }'
 
