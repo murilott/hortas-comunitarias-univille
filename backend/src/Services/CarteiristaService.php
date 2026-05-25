@@ -212,4 +212,64 @@ class CarteiristaService
         
         return $this->carteiristaRepository->delete($uuid);
     }
+
+    /**
+     * Lista canteiristas aplicando os filtros recebidos via query string.
+     *
+     * @param array $filtros
+     * @param array $payloadUsuarioLogado
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function findByFilters(array $filtros, array $payloadUsuarioLogado)
+    {
+        // TODO: Implementar verificação de permissões quando necessário
+
+        // Se o usuário logado tem horta vinculada, restringe a busca à horta dele.
+        if (!empty($payloadUsuarioLogado['horta_uuid']) && empty($filtros['horta_uuid'])) {
+            $filtros['horta_uuid'] = $payloadUsuarioLogado['horta_uuid'];
+        }
+
+        return $this->carteiristaRepository->findByFilters($filtros);
+    }
+
+    /**
+     * Retorna estatísticas agregadas sobre os canteiristas.
+     *
+     * @param array $payloadUsuarioLogado
+     * @param array $opcoes  meses (int) — janela para a série temporal mensal.
+     * @return array
+     */
+    public function getEstatisticas(array $payloadUsuarioLogado, array $opcoes = []): array
+    {
+        // TODO: Implementar verificação de permissões quando necessário
+
+        $meses = isset($opcoes['meses']) ? (int) $opcoes['meses'] : 6;
+        if ($meses < 1) {
+            $meses = 6;
+        }
+
+        // Quando o usuário logado tem horta vinculada, restringe as estatísticas a ela.
+        $hortaUuid = !empty($payloadUsuarioLogado['horta_uuid'])
+            ? $payloadUsuarioLogado['horta_uuid']
+            : null;
+
+        $total = $this->carteiristaRepository->countTotal($hortaUuid);
+        $comCanteiros = $this->carteiristaRepository->countComCanteirosVinculados($hortaUuid);
+        $semCanteiros = $total - $comCanteiros;
+        $totalCanteirosVinculados = $this->carteiristaRepository->countCanteirosVinculados($hortaUuid);
+
+        $mediaCanteirosPorCarteirista = $total > 0
+            ? round($totalCanteirosVinculados / $total, 2)
+            : 0;
+
+        return [
+            'total' => $total,
+            'com_canteiros_vinculados' => $comCanteiros,
+            'sem_canteiros_vinculados' => $semCanteiros,
+            'total_canteiros_vinculados' => $totalCanteirosVinculados,
+            'media_canteiros_por_carteirista' => $mediaCanteirosPorCarteirista,
+            'por_horta' => $this->carteiristaRepository->countPorHorta($hortaUuid),
+            'por_mes' => $this->carteiristaRepository->countPorMes($meses, $hortaUuid),
+        ];
+    }
 }

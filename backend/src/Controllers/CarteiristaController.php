@@ -150,4 +150,71 @@ class CarteiristaController
         $response->getBody()->write(json_encode(['message' => 'Carteirista excluído com sucesso']));
         return $response->withStatus(200);
     }
+
+    /**
+     * GET /carteiristas/filtro
+     *
+     * Query params suportados:
+     *  - nome_completo (string)
+     *  - cpf (string)
+     *  - email (string)
+     *  - telefone (string)
+     *  - horta_uuid (string)
+     *  - com_canteiros (true | false)
+     *  - data_inicio (YYYY-MM-DD)
+     *  - data_fim (YYYY-MM-DD)
+     *  - ordenar_por (nome_completo | cpf | email | telefone | data_de_criacao | data_de_ultima_alteracao)
+     *  - ordem (asc | desc)
+     */
+    public function filter(Request $request, Response $response)
+    {
+        $payloadUsuarioLogado = [
+            'usuario_uuid' => $request->getAttribute('usuario_uuid'),
+            'cargo_uuid' => $request->getAttribute('cargo_uuid'),
+            'associacao_uuid' => $request->getAttribute('associacao_uuid'),
+            'horta_uuid' => $request->getAttribute('horta_uuid'),
+        ];
+
+        $filtros = $request->getQueryParams() ?? [];
+
+        $carteiristas = $this->carteiristaService->findByFilters($filtros, $payloadUsuarioLogado);
+
+        $carteiristasFormatados = [];
+        foreach ($carteiristas as $carteirista) {
+            $carteiristasFormatados[] = $this->formatCarteirista($carteirista);
+        }
+
+        $response->getBody()->write(json_encode([
+            'total' => count($carteiristasFormatados),
+            'filtros_aplicados' => $filtros,
+            'data' => $carteiristasFormatados,
+        ]));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * GET /carteiristas/estatisticas
+     *
+     * Query params opcionais:
+     *  - meses (int) — janela em meses para a série temporal de criações. Default: 6.
+     */
+    public function statistics(Request $request, Response $response)
+    {
+        $payloadUsuarioLogado = [
+            'usuario_uuid' => $request->getAttribute('usuario_uuid'),
+            'cargo_uuid' => $request->getAttribute('cargo_uuid'),
+            'associacao_uuid' => $request->getAttribute('associacao_uuid'),
+            'horta_uuid' => $request->getAttribute('horta_uuid'),
+        ];
+
+        $queryParams = $request->getQueryParams() ?? [];
+        $opcoes = [
+            'meses' => isset($queryParams['meses']) ? (int) $queryParams['meses'] : 6,
+        ];
+
+        $estatisticas = $this->carteiristaService->getEstatisticas($payloadUsuarioLogado, $opcoes);
+
+        $response->getBody()->write(json_encode($estatisticas));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
 }
