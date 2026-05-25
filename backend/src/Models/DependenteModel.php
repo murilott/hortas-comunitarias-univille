@@ -21,7 +21,7 @@ class DependenteModel extends Model
         'cpf',
         'idade',
         'ativo',
-        'carteirista_uuid',
+        'Canteirista_uuid',
         'excluido',
         'usuario_criador_uuid',
         'usuario_alterador_uuid',
@@ -34,9 +34,9 @@ class DependenteModel extends Model
     ];
 
     // Relacionamentos
-    public function carteirista()
+    public function Canteirista()
     {
-        return $this->belongsTo(CarteiristaModel::class, 'carteirista_uuid', 'uuid');
+        return $this->belongsTo(CanteiristaModel::class, 'Canteirista_uuid', 'uuid');
     }
 
     public function usuarioCriador()
@@ -49,3 +49,4 @@ class DependenteModel extends Model
         return $this->belongsTo(UsuarioModel::class, 'usuario_alterador_uuid', 'uuid');
     }
 }
+

@@ -9,7 +9,7 @@ class PagamentoRepository
 {
     public function findAll()
     {
-        return PagamentoModel::with('carteirista')
+        return PagamentoModel::with('Canteirista')
             ->where('excluido', 0)
             ->orderBy('data_pagamento', 'desc')
             ->get();
@@ -17,7 +17,7 @@ class PagamentoRepository
 
     public function findByUuid(string $uuid)
     {
-        return PagamentoModel::with('carteirista')
+        return PagamentoModel::with('Canteirista')
             ->where('uuid', $uuid)
             ->where('excluido', 0)
             ->first();
@@ -50,3 +50,4 @@ class PagamentoRepository
         return true;
     }
 }
+

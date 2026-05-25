@@ -9,7 +9,7 @@ class NotificacaoRepository
 {
     public function findAll()
     {
-        return NotificacaoModel::with(['carteirista', 'horta'])
+        return NotificacaoModel::with(['Canteirista', 'horta'])
             ->where('excluido', 0)
             ->orderBy('data_inicio', 'desc')
             ->get();
@@ -17,7 +17,7 @@ class NotificacaoRepository
 
     public function findByUuid(string $uuid)
     {
-        return NotificacaoModel::with(['carteirista', 'horta'])
+        return NotificacaoModel::with(['Canteirista', 'horta'])
             ->where('uuid', $uuid)
             ->where('excluido', 0)
             ->first();
@@ -27,7 +27,7 @@ class NotificacaoRepository
     {
         $now = date('Y-m-d H:i:s');
         
-        return NotificacaoModel::with(['carteirista', 'horta'])
+        return NotificacaoModel::with(['Canteirista', 'horta'])
             ->where('excluido', 0)
             ->where('ativa', 1)
             ->where('data_inicio', '<=', $now)
@@ -67,3 +67,4 @@ class NotificacaoRepository
         return true;
     }
 }
+

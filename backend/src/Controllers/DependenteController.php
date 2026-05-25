@@ -35,7 +35,7 @@ class DependenteController
                 'cpf' => $dependente->cpf,
                 'idade' => $dependente->idade,
                 'ativo' => $dependente->ativo,
-                'carteirista_uuid' => $dependente->carteirista_uuid,
+                'Canteirista_uuid' => $dependente->Canteirista_uuid,
             ];
         }
         
@@ -65,7 +65,7 @@ class DependenteController
             'cpf' => $dependente->cpf,
             'idade' => $dependente->idade,
             'ativo' => $dependente->ativo,
-            'carteirista_uuid' => $dependente->carteirista_uuid,
+            'Canteirista_uuid' => $dependente->Canteirista_uuid,
         ];
 
         $response->getBody()->write(json_encode($dependenteFormatado));
@@ -91,7 +91,7 @@ class DependenteController
             'cpf' => $dependente->cpf,
             'idade' => $dependente->idade,
             'ativo' => $dependente->ativo,
-            'carteirista_uuid' => $dependente->carteirista_uuid,
+            'Canteirista_uuid' => $dependente->Canteirista_uuid,
         ];
 
         $response->getBody()->write(json_encode($dependenteFormatado));
@@ -122,7 +122,7 @@ class DependenteController
             'cpf' => $dependente->cpf,
             'idade' => $dependente->idade,
             'ativo' => $dependente->ativo,
-            'carteirista_uuid' => $dependente->carteirista_uuid,
+            'Canteirista_uuid' => $dependente->Canteirista_uuid,
         ];
 
         $response->getBody()->write(json_encode($dependenteFormatado));
@@ -149,3 +149,4 @@ class DependenteController
         return $response->withStatus(200);
     }
 }
+

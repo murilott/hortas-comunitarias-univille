@@ -26,8 +26,8 @@ return function (App $app) {
         $canteiroRoutes = require __DIR__ . '/CanteiroRoutes.php';
         $canteiroRoutes($group);
 
-        $carteiristaRoutes = require __DIR__ . '/CarteiristaRoutes.php';
-        $carteiristaRoutes($group);
+        $CanteiristaRoutes = require __DIR__ . '/CanteiristaRoutes.php';
+        $CanteiristaRoutes($group);
 
         $dependenteRoutes = require __DIR__ . '/DependenteRoutes.php';
         $dependenteRoutes($group);
@@ -81,3 +81,4 @@ return function (App $app) {
         $filaDeUsuarioRoutes($group); 
     });
 };
+

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CarteiristaModel extends Model
+class CanteiristaModel extends Model
 {
     protected $table = 'canteiristas';
     protected $primaryKey = 'uuid';
@@ -72,3 +72,4 @@ class CarteiristaModel extends Model
         ]);
     }
 }
+

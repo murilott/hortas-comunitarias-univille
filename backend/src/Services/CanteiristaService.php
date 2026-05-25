@@ -2,29 +2,29 @@
 
 namespace App\Services;
 
-use App\Models\CarteiristaModel;
+use App\Models\CanteiristaModel;
 use App\Repositories\CanteiroRepository;
-use App\Repositories\CarteiristaRepository;
+use App\Repositories\CanteiristaRepository;
 use App\Repositories\CargoRepository;
 use Exception;
 use Ramsey\Uuid\Nonstandard\Uuid;
 
-class CarteiristaService
+class CanteiristaService
 {
-    protected CarteiristaRepository $carteiristaRepository;
+    protected CanteiristaRepository $CanteiristaRepository;
     protected CanteiroRepository $canteiroRepository;
     protected HortaService $HortaService;
     protected CargoRepository $cargoRepository;
     protected UsuarioService $usuarioService;
 
-    public function __construct(CarteiristaRepository $carteiristaRepository, 
+    public function __construct(CanteiristaRepository $CanteiristaRepository, 
         CanteiroRepository $canteiroRepository,
         HortaService $HortaService,
         CargoRepository $cargoRepository,
         UsuarioService $usuarioService
     )
     {
-        $this->carteiristaRepository = $carteiristaRepository;
+        $this->CanteiristaRepository = $CanteiristaRepository;
         $this->canteiroRepository = $canteiroRepository;
         $this->HortaService = $HortaService;
         $this->cargoRepository = $cargoRepository;
@@ -34,17 +34,17 @@ class CarteiristaService
     public function findAllWhere(array $payloadUsuarioLogado)
     {
         // TODO: Implementar verificação de permissões quando necessário
-        // Por enquanto, retorna todos os carteiristas
-        return $this->carteiristaRepository->findAll();
+        // Por enquanto, retorna todos os Canteiristas
+        return $this->CanteiristaRepository->findAll();
     }
 
     public function findByUuid(string $uuid, array $payloadUsuarioLogado)
     {
         // TODO: Implementar verificação de permissões quando necessário
-        return $this->carteiristaRepository->findByUuid($uuid);
+        return $this->CanteiristaRepository->findByUuid($uuid);
     }
 
-    public function create(array $data, array $payloadUsuarioLogado): CarteiristaModel
+    public function create(array $data, array $payloadUsuarioLogado): CanteiristaModel
     {
         // TODO: Implementar verificação de permissões quando necessário
 
@@ -115,14 +115,14 @@ class CarteiristaService
         $data['usuario_uuid'] = $usuario->uuid;
         $data['excluido'] = 0;
         
-        $carteirista = $this->carteiristaRepository->create($data);
+        $Canteirista = $this->CanteiristaRepository->create($data);
 
         if (!empty($canteiros)) {
-            $this->syncCanteiros($carteirista, $canteiros, $payloadUsuarioLogado['usuario_uuid']);
-            $carteirista->refresh();
+            $this->syncCanteiros($Canteirista, $canteiros, $payloadUsuarioLogado['usuario_uuid']);
+            $Canteirista->refresh();
         }
 
-        return $carteirista;
+        return $Canteirista;
     }
 
     public function update(string $uuid, array $data, array $payloadUsuarioLogado)
@@ -149,31 +149,31 @@ class CarteiristaService
         unset($data['usuario_uuid']);
         unset($data['data_de_criacao']);
         
-        $carteirista = $this->carteiristaRepository->findByUuid($uuid);
-        if (!$carteirista) {
+        $Canteirista = $this->CanteiristaRepository->findByUuid($uuid);
+        if (!$Canteirista) {
             return null;
         }
 
-        if (!empty($usuarioData) && !empty($carteirista->usuario_uuid)) {
+        if (!empty($usuarioData) && !empty($Canteirista->usuario_uuid)) {
             $this->usuarioService->update(
-                $carteirista->usuario_uuid,
+                $Canteirista->usuario_uuid,
                 $usuarioData,
                 $payloadUsuarioLogado['usuario_uuid'],
                 $payloadUsuarioLogado
             );
         }
 
-        $carteirista = $this->carteiristaRepository->update($uuid, $data);
+        $Canteirista = $this->CanteiristaRepository->update($uuid, $data);
 
-        if ($carteirista && !empty($canteiros)) {
-            $this->syncCanteiros($carteirista, $canteiros, $payloadUsuarioLogado['usuario_uuid']);
-            $carteirista->refresh();
+        if ($Canteirista && !empty($canteiros)) {
+            $this->syncCanteiros($Canteirista, $canteiros, $payloadUsuarioLogado['usuario_uuid']);
+            $Canteirista->refresh();
         }
 
-        return $carteirista;
+        return $Canteirista;
     }
 
-    private function syncCanteiros(CarteiristaModel $carteirista, array $canteiros, string $usuarioUuid)
+    private function syncCanteiros(CanteiristaModel $Canteirista, array $canteiros, string $usuarioUuid)
     {
         $syncData = [];
 
@@ -189,8 +189,8 @@ class CarteiristaService
                 throw new Exception('UUID do canteiro é obrigatório em cada entrada de canteiros.');
             }
 
-            if ($cant['horta_uuid'] !== $carteirista->horta_uuid) {
-                throw new Exception('O canteiro a ser adicionado deve pertencer à mesma horta do carteirista.');
+            if ($cant['horta_uuid'] !== $Canteirista->horta_uuid) {
+                throw new Exception('O canteiro a ser adicionado deve pertencer à mesma horta do Canteirista.');
             }
 
             $syncData[$canteiroUuid] = [
@@ -202,20 +202,20 @@ class CarteiristaService
             ];
         }
 
-        $carteirista->canteiros()->sync($syncData);
+        $Canteirista->canteiros()->sync($syncData);
     }
 
     public function delete(string $uuid, array $payloadUsuarioLogado)
     {
         // TODO: Implementar verificação de permissões quando necessário
         
-        $carteirista = $this->carteiristaRepository->findByUuid($uuid);
+        $Canteirista = $this->CanteiristaRepository->findByUuid($uuid);
         
-        if (!$carteirista) {
+        if (!$Canteirista) {
             throw new Exception("Canteirista não encontrado");
         }
         
-        return $this->carteiristaRepository->delete($uuid);
+        return $this->CanteiristaRepository->delete($uuid);
     }
 
     /**
@@ -234,7 +234,7 @@ class CarteiristaService
             $filtros['horta_uuid'] = $payloadUsuarioLogado['horta_uuid'];
         }
 
-        return $this->carteiristaRepository->findByFilters($filtros);
+        return $this->CanteiristaRepository->findByFilters($filtros);
     }
 
     /**
@@ -258,12 +258,12 @@ class CarteiristaService
             ? $payloadUsuarioLogado['horta_uuid']
             : null;
 
-        $total = $this->carteiristaRepository->countTotal($hortaUuid);
-        $comCanteiros = $this->carteiristaRepository->countComCanteirosVinculados($hortaUuid);
+        $total = $this->CanteiristaRepository->countTotal($hortaUuid);
+        $comCanteiros = $this->CanteiristaRepository->countComCanteirosVinculados($hortaUuid);
         $semCanteiros = $total - $comCanteiros;
-        $totalCanteirosVinculados = $this->carteiristaRepository->countCanteirosVinculados($hortaUuid);
+        $totalCanteirosVinculados = $this->CanteiristaRepository->countCanteirosVinculados($hortaUuid);
 
-        $mediaCanteirosPorCarteirista = $total > 0
+        $mediaCanteirosPorCanteirista = $total > 0
             ? round($totalCanteirosVinculados / $total, 2)
             : 0;
 
@@ -272,9 +272,10 @@ class CarteiristaService
             'com_canteiros_vinculados' => $comCanteiros,
             'sem_canteiros_vinculados' => $semCanteiros,
             'total_canteiros_vinculados' => $totalCanteirosVinculados,
-            'media_canteiros_por_carteirista' => $mediaCanteirosPorCarteirista,
-            'por_horta' => $this->carteiristaRepository->countPorHorta($hortaUuid),
-            'por_mes' => $this->carteiristaRepository->countPorMes($meses, $hortaUuid),
+            'media_canteiros_por_Canteirista' => $mediaCanteirosPorCanteirista,
+            'por_horta' => $this->CanteiristaRepository->countPorHorta($hortaUuid),
+            'por_mes' => $this->CanteiristaRepository->countPorMes($meses, $hortaUuid),
         ];
     }
 }
+

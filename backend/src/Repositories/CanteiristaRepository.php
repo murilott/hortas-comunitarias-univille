@@ -2,51 +2,51 @@
 
 namespace App\Repositories;
 
-use App\Models\CarteiristaModel;
+use App\Models\CanteiristaModel;
 use Illuminate\Database\Eloquent\Collection;
 
-class CarteiristaRepository
+class CanteiristaRepository
 {
     public function findAll()
     {
-        return CarteiristaModel::where('excluido', false)->get();
+        return CanteiristaModel::where('excluido', false)->get();
     }
 
     public function findByUuid(string $uuid)
     {
-        return CarteiristaModel::where('uuid', $uuid)
+        return CanteiristaModel::where('uuid', $uuid)
             ->where('excluido', false)
             ->first();
     }
 
     public function create(array $data)
     {
-        return CarteiristaModel::create($data);
+        return CanteiristaModel::create($data);
     }
 
     public function update(string $uuid, array $data)
     {
-        $carteirista = $this->findByUuid($uuid);
+        $Canteirista = $this->findByUuid($uuid);
         
-        if (!$carteirista) {
+        if (!$Canteirista) {
             return null;
         }
 
-        $carteirista->update($data);
-        return $carteirista->fresh();
+        $Canteirista->update($data);
+        return $Canteirista->fresh();
     }
 
     public function delete(string $uuid)
     {
-        $carteirista = $this->findByUuid($uuid);
+        $Canteirista = $this->findByUuid($uuid);
         
-        if (!$carteirista) {
+        if (!$Canteirista) {
             return false;
         }
 
         // Soft delete
-        $carteirista->excluido = true;
-        $carteirista->save();
+        $Canteirista->excluido = true;
+        $Canteirista->save();
         
         return true;
     }
@@ -68,7 +68,7 @@ class CarteiristaRepository
      */
     public function findByFilters(array $filtros): Collection
     {
-        $query = CarteiristaModel::with(['canteiros', 'usuario'])
+        $query = CanteiristaModel::with(['canteiros', 'usuario'])
             ->where('excluido', false);
 
         if (!empty($filtros['nome_completo'])) {
@@ -136,7 +136,7 @@ class CarteiristaRepository
      */
     public function countTotal(?string $hortaUuid = null): int
     {
-        $query = CarteiristaModel::where('excluido', false);
+        $query = CanteiristaModel::where('excluido', false);
 
         if (!empty($hortaUuid)) {
             $query->where('horta_uuid', $hortaUuid);
@@ -150,7 +150,7 @@ class CarteiristaRepository
      */
     public function countComCanteirosVinculados(?string $hortaUuid = null): int
     {
-        $query = CarteiristaModel::where('excluido', false)
+        $query = CanteiristaModel::where('excluido', false)
             ->whereHas('canteiros', function ($q) {
                 $q->where('canteiristas_canteiros.ativo', 1)
                   ->where('canteiristas_canteiros.excluido', 0);
@@ -168,7 +168,7 @@ class CarteiristaRepository
      */
     public function countCanteirosVinculados(?string $hortaUuid = null): int
     {
-        $query = CarteiristaModel::where('excluido', false)
+        $query = CanteiristaModel::where('excluido', false)
             ->withCount(['canteiros' => function ($q) {
                 $q->where('canteiristas_canteiros.ativo', 1)
                   ->where('canteiristas_canteiros.excluido', 0);
@@ -186,7 +186,7 @@ class CarteiristaRepository
      */
     public function countPorHorta(?string $hortaUuid = null): array
     {
-        $query = CarteiristaModel::where('excluido', false)
+        $query = CanteiristaModel::where('excluido', false)
             ->selectRaw('horta_uuid, COUNT(*) as total')
             ->groupBy('horta_uuid');
 
@@ -209,7 +209,7 @@ class CarteiristaRepository
     {
         $dataLimite = date('Y-m-d 00:00:00', strtotime("-{$meses} months"));
 
-        $query = CarteiristaModel::where('excluido', false)
+        $query = CanteiristaModel::where('excluido', false)
             ->where('data_de_criacao', '>=', $dataLimite)
             ->selectRaw("DATE_FORMAT(data_de_criacao, '%Y-%m') as mes, COUNT(*) as total")
             ->groupBy('mes')
@@ -227,3 +227,4 @@ class CarteiristaRepository
             ->all();
     }
 }
+

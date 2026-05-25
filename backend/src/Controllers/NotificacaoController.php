@@ -27,8 +27,8 @@ class NotificacaoController
                     'tipo' => $n->tipo,
                     'titulo' => $n->titulo,
                     'mensagem' => $n->mensagem,
-                    'carteirista_uuid' => $n->carteirista_uuid,
-                    'carteirista_nome' => $n->carteirista->nome ?? null,
+                    'Canteirista_uuid' => $n->Canteirista_uuid,
+                    'Canteirista_nome' => $n->Canteirista->nome ?? null,
                     'horta_uuid' => $n->horta_uuid,
                     'horta_nome' => $n->horta->nome ?? null,
                     'data_evento' => $n->data_evento?->format('Y-m-d H:i:s'),
@@ -95,8 +95,8 @@ class NotificacaoController
                 'tipo' => $notificacao->tipo,
                 'titulo' => $notificacao->titulo,
                 'mensagem' => $notificacao->mensagem,
-                'carteirista_uuid' => $notificacao->carteirista_uuid,
-                'carteirista_nome' => $notificacao->carteirista->nome ?? null,
+                'Canteirista_uuid' => $notificacao->Canteirista_uuid,
+                'Canteirista_nome' => $notificacao->Canteirista->nome ?? null,
                 'horta_uuid' => $notificacao->horta_uuid,
                 'horta_nome' => $notificacao->horta->nome ?? null,
                 'data_evento' => $notificacao->data_evento?->format('Y-m-d H:i:s'),
@@ -227,3 +227,4 @@ class NotificacaoController
         }
     }
 }
+

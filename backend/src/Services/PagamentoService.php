@@ -3,20 +3,20 @@
 namespace App\Services;
 
 use App\Repositories\PagamentoRepository;
-use App\Repositories\CarteiristaRepository;
+use App\Repositories\CanteiristaRepository;
 use InvalidArgumentException;
 
 class PagamentoService
 {
     private PagamentoRepository $repository;
-    private CarteiristaRepository $carteiristaRepository;
+    private CanteiristaRepository $CanteiristaRepository;
 
     public function __construct(
         PagamentoRepository $repository,
-        CarteiristaRepository $carteiristaRepository
+        CanteiristaRepository $CanteiristaRepository
     ) {
         $this->repository = $repository;
-        $this->carteiristaRepository = $carteiristaRepository;
+        $this->CanteiristaRepository = $CanteiristaRepository;
     }
 
     public function findAll()
@@ -36,8 +36,8 @@ class PagamentoService
     public function create(array $data)
     {
         // Validações
-        if (empty($data['carteirista_uuid'])) {
-            throw new InvalidArgumentException('Carteirista é obrigatório');
+        if (empty($data['Canteirista_uuid'])) {
+            throw new InvalidArgumentException('Canteirista é obrigatório');
         }
 
         if (empty($data['valor']) || $data['valor'] <= 0) {
@@ -52,10 +52,10 @@ class PagamentoService
             throw new InvalidArgumentException('Forma de pagamento inválida');
         }
 
-        // Verifica se carteirista existe
-        $carteirista = $this->carteiristaRepository->findByUuid($data['carteirista_uuid']);
-        if (!$carteirista) {
-            throw new InvalidArgumentException('Carteirista não encontrado');
+        // Verifica se Canteirista existe
+        $Canteirista = $this->CanteiristaRepository->findByUuid($data['Canteirista_uuid']);
+        if (!$Canteirista) {
+            throw new InvalidArgumentException('Canteirista não encontrado');
         }
 
         // Define data_pagamento como hoje se não informada
@@ -69,10 +69,10 @@ class PagamentoService
     public function update(string $uuid, array $data)
     {
         // Validações
-        if (isset($data['carteirista_uuid']) && !empty($data['carteirista_uuid'])) {
-            $carteirista = $this->carteiristaRepository->findByUuid($data['carteirista_uuid']);
-            if (!$carteirista) {
-                throw new InvalidArgumentException('Carteirista não encontrado');
+        if (isset($data['Canteirista_uuid']) && !empty($data['Canteirista_uuid'])) {
+            $Canteirista = $this->CanteiristaRepository->findByUuid($data['Canteirista_uuid']);
+            if (!$Canteirista) {
+                throw new InvalidArgumentException('Canteirista não encontrado');
             }
         }
 
@@ -101,3 +101,4 @@ class PagamentoService
         return true;
     }
 }
+

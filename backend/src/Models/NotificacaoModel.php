@@ -19,7 +19,7 @@ class NotificacaoModel extends Model
         'tipo',
         'titulo',
         'mensagem',
-        'carteirista_uuid',
+        'Canteirista_uuid',
         'horta_uuid',
         'data_evento',
         'data_inicio',
@@ -41,9 +41,9 @@ class NotificacaoModel extends Model
         'data_de_ultima_alteracao' => 'datetime',
     ];
 
-    public function carteirista()
+    public function Canteirista()
     {
-        return $this->belongsTo(CarteiristaModel::class, 'carteirista_uuid', 'uuid');
+        return $this->belongsTo(CanteiristaModel::class, 'Canteirista_uuid', 'uuid');
     }
 
     public function horta()
@@ -51,3 +51,4 @@ class NotificacaoModel extends Model
         return $this->belongsTo(HortaModel::class, 'horta_uuid', 'uuid');
     }
 }
+

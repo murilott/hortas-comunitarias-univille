@@ -3,23 +3,23 @@
 namespace App\Services;
 
 use App\Repositories\NotificacaoRepository;
-use App\Repositories\CarteiristaRepository;
+use App\Repositories\CanteiristaRepository;
 use App\Repositories\HortaRepository;
 use InvalidArgumentException;
 
 class NotificacaoService
 {
     private NotificacaoRepository $repository;
-    private CarteiristaRepository $carteiristaRepository;
+    private CanteiristaRepository $CanteiristaRepository;
     private HortaRepository $hortaRepository;
 
     public function __construct(
         NotificacaoRepository $repository,
-        CarteiristaRepository $carteiristaRepository,
+        CanteiristaRepository $CanteiristaRepository,
         HortaRepository $hortaRepository
     ) {
         $this->repository = $repository;
-        $this->carteiristaRepository = $carteiristaRepository;
+        $this->CanteiristaRepository = $CanteiristaRepository;
         $this->hortaRepository = $hortaRepository;
     }
 
@@ -63,13 +63,13 @@ class NotificacaoService
 
         // Validações específicas por tipo
         if ($data['tipo'] === 'aviso_canteirista') {
-            if (empty($data['carteirista_uuid'])) {
-                throw new InvalidArgumentException('Carteirista é obrigatório para aviso específico');
+            if (empty($data['Canteirista_uuid'])) {
+                throw new InvalidArgumentException('Canteirista é obrigatório para aviso específico');
             }
             
-            $carteirista = $this->carteiristaRepository->findByUuid($data['carteirista_uuid']);
-            if (!$carteirista) {
-                throw new InvalidArgumentException('Carteirista não encontrado');
+            $Canteirista = $this->CanteiristaRepository->findByUuid($data['Canteirista_uuid']);
+            if (!$Canteirista) {
+                throw new InvalidArgumentException('Canteirista não encontrado');
             }
         }
 
@@ -111,10 +111,10 @@ class NotificacaoService
             }
         }
 
-        if (isset($data['carteirista_uuid']) && !empty($data['carteirista_uuid'])) {
-            $carteirista = $this->carteiristaRepository->findByUuid($data['carteirista_uuid']);
-            if (!$carteirista) {
-                throw new InvalidArgumentException('Carteirista não encontrado');
+        if (isset($data['Canteirista_uuid']) && !empty($data['Canteirista_uuid'])) {
+            $Canteirista = $this->CanteiristaRepository->findByUuid($data['Canteirista_uuid']);
+            if (!$Canteirista) {
+                throw new InvalidArgumentException('Canteirista não encontrado');
             }
         }
 
@@ -142,3 +142,4 @@ class NotificacaoService
         return true;
     }
 }
+

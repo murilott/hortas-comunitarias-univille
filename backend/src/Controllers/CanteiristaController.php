@@ -5,16 +5,16 @@ namespace App\Controllers;
 use App\Services\HortaService;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use App\Services\CarteiristaService;
+use App\Services\CanteiristaService;
 
-class CarteiristaController
+class CanteiristaController
 {
-    protected CarteiristaService $carteiristaService;
+    protected CanteiristaService $CanteiristaService;
     protected HortaService $hortaService;
 
-    public function __construct(CarteiristaService $carteiristaService, HortaService $hortaService)
+    public function __construct(CanteiristaService $CanteiristaService, HortaService $hortaService)
     {
-        $this->carteiristaService = $carteiristaService;
+        $this->CanteiristaService = $CanteiristaService;
         $this->hortaService = $hortaService;
     }
 
@@ -27,16 +27,16 @@ class CarteiristaController
             'horta_uuid' => $request->getAttribute('horta_uuid'),
         ];
 
-        $carteiristas = $this->carteiristaService->findAllWhere($payloadUsuarioLogado);
-        $carteiristas->load(['canteiros', 'usuario']);
+        $Canteiristas = $this->CanteiristaService->findAllWhere($payloadUsuarioLogado);
+        $Canteiristas->load(['canteiros', 'usuario']);
         
         // Formatar resposta
-        $carteiristasFormatados = [];
-        foreach ($carteiristas as $carteirista) {
-            $carteiristasFormatados[] = $this->formatCarteirista($carteirista);
+        $CanteiristasFormatados = [];
+        foreach ($Canteiristas as $Canteirista) {
+            $CanteiristasFormatados[] = $this->formatCanteirista($Canteirista);
         }
         
-        $response->getBody()->write(json_encode($carteiristasFormatados));
+        $response->getBody()->write(json_encode($CanteiristasFormatados));
         return $response->withStatus(200);
     }
 
@@ -49,18 +49,18 @@ class CarteiristaController
             'horta_uuid' => $request->getAttribute('horta_uuid'),
         ];
         
-        $carteirista = $this->carteiristaService->findByUuid($args['uuid'], $payloadUsuarioLogado);
+        $Canteirista = $this->CanteiristaService->findByUuid($args['uuid'], $payloadUsuarioLogado);
         
-        if (!$carteirista) {
-            $response->getBody()->write(json_encode(['error' => 'Carteirista não encontrado']));
+        if (!$Canteirista) {
+            $response->getBody()->write(json_encode(['error' => 'Canteirista não encontrado']));
             return $response->withStatus(404);
         }
         
-        $carteirista->load(['canteiros', 'usuario']);
+        $Canteirista->load(['canteiros', 'usuario']);
 
-        $carteiristaFormatado = $this->formatCarteirista($carteirista);
+        $CanteiristaFormatado = $this->formatCanteirista($Canteirista);
 
-        $response->getBody()->write(json_encode($carteiristaFormatado));
+        $response->getBody()->write(json_encode($CanteiristaFormatado));
         return $response->withStatus(200);
     }
 
@@ -75,12 +75,12 @@ class CarteiristaController
         
         $data = (array)$request->getParsedBody();
         
-        $carteirista = $this->carteiristaService->create($data, $payloadUsuarioLogado);
-        $carteirista->load(['canteiros', 'usuario']);
+        $Canteirista = $this->CanteiristaService->create($data, $payloadUsuarioLogado);
+        $Canteirista->load(['canteiros', 'usuario']);
 
-        $carteiristaFormatado = $this->formatCarteirista($carteirista);
+        $CanteiristaFormatado = $this->formatCanteirista($Canteirista);
 
-        $response->getBody()->write(json_encode($carteiristaFormatado));
+        $response->getBody()->write(json_encode($CanteiristaFormatado));
         return $response->withStatus(201);
     }
 
@@ -95,37 +95,37 @@ class CarteiristaController
         
         $data = (array)$request->getParsedBody();
         
-        $carteirista = $this->carteiristaService->update($args['uuid'], $data, $payloadUsuarioLogado);
+        $Canteirista = $this->CanteiristaService->update($args['uuid'], $data, $payloadUsuarioLogado);
 
-        if (!$carteirista) {
-            $response->getBody()->write(json_encode(['error' => 'Carteirista não encontrado']));
+        if (!$Canteirista) {
+            $response->getBody()->write(json_encode(['error' => 'Canteirista não encontrado']));
             return $response->withStatus(404);
         }
 
-        $carteirista->load(['canteiros', 'usuario']);
-        $carteiristaFormatado = $this->formatCarteirista($carteirista);
+        $Canteirista->load(['canteiros', 'usuario']);
+        $CanteiristaFormatado = $this->formatCanteirista($Canteirista);
 
-        $response->getBody()->write(json_encode($carteiristaFormatado));
+        $response->getBody()->write(json_encode($CanteiristaFormatado));
         return $response->withStatus(200);
     }
 
-    private function formatCarteirista($carteirista): array
+    private function formatCanteirista($Canteirista): array
     {
         return [
-            'id' => $carteirista->uuid,
-            'usuario_uuid' => $carteirista->usuario_uuid,
-            'telefone' => $carteirista->telefone ?? null,
+            'id' => $Canteirista->uuid,
+            'usuario_uuid' => $Canteirista->usuario_uuid,
+            'telefone' => $Canteirista->telefone ?? null,
             'usuario' => [
-                'uuid' => $carteirista->usuario->uuid ?? null,
-                'nome_completo' => $carteirista->usuario->nome_completo ?? null,
-                'cpf' => $carteirista->usuario->cpf ?? null,
-                'email' => $carteirista->usuario->email ?? null,
-                'endereco_uuid' => $carteirista->usuario->endereco_uuid ?? null,
-                'apelido' => $carteirista->usuario->apelido ?? null,
-                'data_de_nascimento' => $carteirista->usuario->data_de_nascimento ?? null,
+                'uuid' => $Canteirista->usuario->uuid ?? null,
+                'nome_completo' => $Canteirista->usuario->nome_completo ?? null,
+                'cpf' => $Canteirista->usuario->cpf ?? null,
+                'email' => $Canteirista->usuario->email ?? null,
+                'endereco_uuid' => $Canteirista->usuario->endereco_uuid ?? null,
+                'apelido' => $Canteirista->usuario->apelido ?? null,
+                'data_de_nascimento' => $Canteirista->usuario->data_de_nascimento ?? null,
             ],
-            'horta_vinculada' => $carteirista->horta_uuid,
-            'canteiros' => $carteirista->canteiros->map(function ($canteiro) {
+            'horta_vinculada' => $Canteirista->horta_uuid,
+            'canteiros' => $Canteirista->canteiros->map(function ($canteiro) {
                 return [
                     'uuid' => $canteiro->uuid,
                     'numero_identificador' => $canteiro->numero_identificador,
@@ -145,19 +145,19 @@ class CarteiristaController
             'horta_uuid' => $request->getAttribute('horta_uuid'),
         ];
         
-        $deleted = $this->carteiristaService->delete($args['uuid'], $payloadUsuarioLogado);
+        $deleted = $this->CanteiristaService->delete($args['uuid'], $payloadUsuarioLogado);
 
         if (!$deleted) {
-            $response->getBody()->write(json_encode(['error' => 'Carteirista não encontrado']));
+            $response->getBody()->write(json_encode(['error' => 'Canteirista não encontrado']));
             return $response->withStatus(404);
         }
 
-        $response->getBody()->write(json_encode(['message' => 'Carteirista excluído com sucesso']));
+        $response->getBody()->write(json_encode(['message' => 'Canteirista excluído com sucesso']));
         return $response->withStatus(200);
     }
 
     /**
-     * GET /carteiristas/filtro
+     * GET /Canteiristas/filtro
      *
      * Query params suportados:
      *  - nome_completo (string)
@@ -182,23 +182,23 @@ class CarteiristaController
 
         $filtros = $request->getQueryParams() ?? [];
 
-        $carteiristas = $this->carteiristaService->findByFilters($filtros, $payloadUsuarioLogado);
+        $Canteiristas = $this->CanteiristaService->findByFilters($filtros, $payloadUsuarioLogado);
 
-        $carteiristasFormatados = [];
-        foreach ($carteiristas as $carteirista) {
-            $carteiristasFormatados[] = $this->formatCarteirista($carteirista);
+        $CanteiristasFormatados = [];
+        foreach ($Canteiristas as $Canteirista) {
+            $CanteiristasFormatados[] = $this->formatCanteirista($Canteirista);
         }
 
         $response->getBody()->write(json_encode([
-            'total' => count($carteiristasFormatados),
+            'total' => count($CanteiristasFormatados),
             'filtros_aplicados' => $filtros,
-            'data' => $carteiristasFormatados,
+            'data' => $CanteiristasFormatados,
         ]));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 
     /**
-     * GET /carteiristas/estatisticas
+     * GET /Canteiristas/estatisticas
      *
      * Query params opcionais:
      *  - meses (int) — janela em meses para a série temporal de criações. Default: 6.
@@ -217,9 +217,10 @@ class CarteiristaController
             'meses' => isset($queryParams['meses']) ? (int) $queryParams['meses'] : 6,
         ];
 
-        $estatisticas = $this->carteiristaService->getEstatisticas($payloadUsuarioLogado, $opcoes);
+        $estatisticas = $this->CanteiristaService->getEstatisticas($payloadUsuarioLogado, $opcoes);
 
         $response->getBody()->write(json_encode($estatisticas));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
 }
+
