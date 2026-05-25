@@ -259,6 +259,7 @@ CREATE TABLE canteiristas (
     horta_uuid CHAR(36) NOT NULL,
     usuario_uuid CHAR(36),
     telefone VARCHAR(20),
+    ativo TINYINT DEFAULT 1,
     excluido TINYINT DEFAULT 0,
     usuario_criador_uuid CHAR(36),
     data_de_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

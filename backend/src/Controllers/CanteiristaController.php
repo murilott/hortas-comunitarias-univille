@@ -115,6 +115,7 @@ class CanteiristaController
             'id' => $Canteirista->uuid,
             'usuario_uuid' => $Canteirista->usuario_uuid,
             'telefone' => $Canteirista->telefone ?? null,
+            'ativo' => $Canteirista->ativo,
             'usuario' => [
                 'uuid' => $Canteirista->usuario->uuid ?? null,
                 'nome_completo' => $Canteirista->usuario->nome_completo ?? null,

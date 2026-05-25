@@ -113,6 +113,7 @@ class CanteiristaService
         $data['usuario_criador_uuid'] =  $payloadUsuarioLogado['usuario_uuid'];
         $data['usuario_alterador_uuid'] =  $payloadUsuarioLogado['usuario_uuid'];
         $data['usuario_uuid'] = $usuario->uuid;
+        $data['ativo'] = 1;
         $data['excluido'] = 0;
         
         $Canteirista = $this->CanteiristaRepository->create($data);

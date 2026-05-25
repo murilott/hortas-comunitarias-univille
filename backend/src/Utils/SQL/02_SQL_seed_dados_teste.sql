@@ -225,10 +225,10 @@ VALUES
 (UUID(), 'C-003', 20.75, @ultimaHorta2, @ultimoUsuario, 0, @ultimoUsuario, @ultimoUsuario);
 
 -- ================= CANTEIRISTAS =================
-INSERT INTO canteiristas (uuid, horta_uuid, usuario_uuid, telefone, excluido, usuario_criador_uuid, usuario_alterador_uuid)
+INSERT INTO canteiristas (uuid, horta_uuid, usuario_uuid, telefone, ativo, excluido, usuario_criador_uuid, usuario_alterador_uuid)
 VALUES
-(UUID(), @ultimaHorta1, (SELECT u.uuid FROM usuarios u WHERE u.email = 'canteirista_1@example.com' LIMIT 1), '(11) 91234-0001', 0, @ultimoUsuario, @ultimoUsuario),
-(UUID(), @ultimaHorta2, (SELECT u.uuid FROM usuarios u WHERE u.email = 'canteirista_2@example.com' LIMIT 1), '(11) 92345-0002', 0, @ultimoUsuario, @ultimoUsuario);
+(UUID(), @ultimaHorta1, (SELECT u.uuid FROM usuarios u WHERE u.email = 'canteirista_1@example.com' LIMIT 1), '(11) 91234-0001', 1, 0, @ultimoUsuario, @ultimoUsuario),
+(UUID(), @ultimaHorta2, (SELECT u.uuid FROM usuarios u WHERE u.email = 'canteirista_2@example.com' LIMIT 1), '(11) 92345-0002', 1, 0, @ultimoUsuario, @ultimoUsuario);
 
 -- ================= CANTEIRISTAS E CANTEIROS =================
 SET @canteirista1 = (SELECT ct.uuid FROM canteiristas ct JOIN usuarios u ON u.uuid = ct.usuario_uuid WHERE u.email = 'canteirista_1@example.com' LIMIT 1);

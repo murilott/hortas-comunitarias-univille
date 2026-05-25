@@ -20,6 +20,7 @@ class CanteiristaModel extends Model
         'horta_uuid',
         'usuario_uuid',
         'telefone',
+        'ativo',
         'excluido',
         'usuario_criador_uuid',
         'usuario_alterador_uuid',
@@ -27,6 +28,7 @@ class CanteiristaModel extends Model
     ];
 
     protected $casts = [
+        'ativo' => 'boolean',
         'excluido' => 'boolean',
     ];
 
