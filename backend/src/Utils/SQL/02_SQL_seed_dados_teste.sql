@@ -225,14 +225,14 @@ VALUES
 (UUID(), 'C-003', 20.75, @ultimaHorta2, @ultimoUsuario, 0, @ultimoUsuario, @ultimoUsuario);
 
 -- ================= CANTEIRISTAS =================
-INSERT INTO canteiristas (uuid, cpf, nome_completo, telefone, email, endereco_uuid, horta_uuid, excluido, usuario_criador_uuid, usuario_alterador_uuid)
+INSERT INTO canteiristas (uuid, horta_uuid, usuario_uuid, telefone, excluido, usuario_criador_uuid, usuario_alterador_uuid)
 VALUES
-(UUID(), '555.555.555-15', 'Pedro Canteiro SP', '(11) 99999-0001', 'canteirista_1@example.com', (SELECT e.uuid FROM enderecos e WHERE e.cidade = 'São Paulo' LIMIT 1), @ultimaHorta1, 0, @ultimoUsuario, @ultimoUsuario),
-(UUID(), '666.666.666-66', 'Julia Canteiro RJ', '(21) 99999-0002', 'canteirista_2@example.com', (SELECT e.uuid FROM enderecos e WHERE e.cidade = 'Rio de Janeiro' LIMIT 1), @ultimaHorta2, 0, @ultimoUsuario, @ultimoUsuario);
+(UUID(), @ultimaHorta1, (SELECT u.uuid FROM usuarios u WHERE u.email = 'canteirista_1@example.com' LIMIT 1), '(11) 91234-0001', 0, @ultimoUsuario, @ultimoUsuario),
+(UUID(), @ultimaHorta2, (SELECT u.uuid FROM usuarios u WHERE u.email = 'canteirista_2@example.com' LIMIT 1), '(11) 92345-0002', 0, @ultimoUsuario, @ultimoUsuario);
 
 -- ================= CANTEIRISTAS E CANTEIROS =================
-SET @canteirista1 = (SELECT ct.uuid FROM canteiristas ct WHERE ct.email = 'canteirista_1@example.com');
-SET @canteirista2 = (SELECT ct.uuid FROM canteiristas ct WHERE ct.email = 'canteirista_2@example.com');
+SET @canteirista1 = (SELECT ct.uuid FROM canteiristas ct JOIN usuarios u ON u.uuid = ct.usuario_uuid WHERE u.email = 'canteirista_1@example.com' LIMIT 1);
+SET @canteirista2 = (SELECT ct.uuid FROM canteiristas ct JOIN usuarios u ON u.uuid = ct.usuario_uuid WHERE u.email = 'canteirista_2@example.com' LIMIT 1);
 SET @canteiro1 = (SELECT c.uuid FROM canteiros c WHERE c.numero_identificador = 'C-001');
 SET @canteiro2 = (SELECT c.uuid FROM canteiros c WHERE c.numero_identificador = 'C-002');
 SET @canteiro3 = (SELECT c.uuid FROM canteiros c WHERE c.numero_identificador = 'C-003');

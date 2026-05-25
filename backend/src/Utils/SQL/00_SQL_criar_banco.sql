@@ -256,13 +256,9 @@ CREATE TABLE permissoes_de_excecao (
 -- Canteiristas
 CREATE TABLE canteiristas (
     uuid CHAR(36) NOT NULL,
-    cpf VARCHAR(14) NOT NULL,
-    nome_completo VARCHAR(255) NOT NULL,
-    telefone VARCHAR(25) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    endereco_uuid CHAR(36) NOT NULL,
     horta_uuid CHAR(36) NOT NULL,
     usuario_uuid CHAR(36),
+    telefone VARCHAR(20),
     excluido TINYINT DEFAULT 0,
     usuario_criador_uuid CHAR(36),
     data_de_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -270,7 +266,6 @@ CREATE TABLE canteiristas (
     data_de_ultima_alteracao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     usuario_anterior_uuid CHAR(36),
     PRIMARY KEY (uuid),
-    FOREIGN KEY (endereco_uuid) REFERENCES enderecos(uuid),
     FOREIGN KEY (horta_uuid) REFERENCES hortas(uuid),
     FOREIGN KEY (usuario_uuid) REFERENCES usuarios(uuid),
     FOREIGN KEY (usuario_criador_uuid) REFERENCES usuarios(uuid),

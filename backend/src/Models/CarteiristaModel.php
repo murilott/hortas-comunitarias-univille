@@ -17,13 +17,9 @@ class CarteiristaModel extends Model
 
     protected $fillable = [
         'uuid',
-        'cpf',
-        'nome_completo',
-        'telefone',
-        'email',
-        'endereco_uuid',
         'horta_uuid',
         'usuario_uuid',
+        'telefone',
         'excluido',
         'usuario_criador_uuid',
         'usuario_alterador_uuid',
@@ -35,11 +31,6 @@ class CarteiristaModel extends Model
     ];
 
     // Relacionamentos
-    public function endereco()
-    {
-        return $this->belongsTo(EnderecoModel::class, 'endereco_uuid', 'uuid');
-    }
-
     public function horta()
     {
         return $this->belongsTo(HortaModel::class, 'horta_uuid', 'uuid');

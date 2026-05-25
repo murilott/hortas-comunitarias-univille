@@ -68,19 +68,25 @@ class CarteiristaRepository
      */
     public function findByFilters(array $filtros): Collection
     {
-        $query = CarteiristaModel::with('canteiros')
+        $query = CarteiristaModel::with(['canteiros', 'usuario'])
             ->where('excluido', false);
 
         if (!empty($filtros['nome_completo'])) {
-            $query->where('nome_completo', 'like', '%' . $filtros['nome_completo'] . '%');
+            $query->whereHas('usuario', function ($q) use ($filtros) {
+                $q->where('nome_completo', 'like', '%' . $filtros['nome_completo'] . '%');
+            });
         }
 
         if (!empty($filtros['cpf'])) {
-            $query->where('cpf', 'like', '%' . $filtros['cpf'] . '%');
+            $query->whereHas('usuario', function ($q) use ($filtros) {
+                $q->where('cpf', 'like', '%' . $filtros['cpf'] . '%');
+            });
         }
 
         if (!empty($filtros['email'])) {
-            $query->where('email', 'like', '%' . $filtros['email'] . '%');
+            $query->whereHas('usuario', function ($q) use ($filtros) {
+                $q->where('email', 'like', '%' . $filtros['email'] . '%');
+            });
         }
 
         if (!empty($filtros['telefone'])) {
@@ -116,7 +122,7 @@ class CarteiristaRepository
 
         $ordenarPor = $filtros['ordenar_por'] ?? 'data_de_criacao';
         $ordem = strtolower($filtros['ordem'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
-        $colunasPermitidas = ['nome_completo', 'cpf', 'email', 'telefone', 'data_de_criacao', 'data_de_ultima_alteracao'];
+        $colunasPermitidas = ['data_de_criacao', 'data_de_ultima_alteracao'];
         if (!in_array($ordenarPor, $colunasPermitidas, true)) {
             $ordenarPor = 'data_de_criacao';
         }

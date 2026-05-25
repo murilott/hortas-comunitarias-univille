@@ -51,25 +51,6 @@ class CarteiristaService
         $canteiros = $data['canteiros'] ?? [];
         unset($data['canteiros']);
 
-        $usuarioData = [
-            'nome_completo' => $data['nome_completo'] ?? null,
-            'cpf' => $data['cpf'] ?? null,
-            'email' => $data['email'] ?? null,
-            'senha' => $data['senha'] ?? null,
-            'data_de_nascimento' => $data['data_de_nascimento'] ?? null,
-            'apelido' => $data['apelido'] ?? null,
-        ];
-
-        $guarded = ['uuid','usuario_criador_uuid','data_de_criacao','data_de_ultima_alteracao', 'usuario_uuid'];
-        foreach ($guarded as $g) unset($data[$g]);
-
-        // Validações básicas
-        $horta = $this->HortaService->findByUuid($data['horta_uuid'], $payloadUsuarioLogado);
-
-        if (!$horta) {
-            throw new Exception("Horta não encontrada");
-        }
-
         if (empty($data['cpf'])) {
             throw new Exception("Cpf é obrigatório");
         }
@@ -82,7 +63,31 @@ class CarteiristaService
         if (empty($data['horta_uuid'])) {
             throw new Exception("Horta é obrigatória");
         }
-        
+
+        $usuarioData = [
+            'nome_completo' => $data['nome_completo'] ?? null,
+            'cpf' => $data['cpf'] ?? null,
+            'email' => $data['email'] ?? null,
+            'senha' => $data['senha'] ?? null,
+            'data_de_nascimento' => $data['data_de_nascimento'] ?? null,
+            'apelido' => $data['apelido'] ?? null,
+            'endereco_uuid' => $data['endereco_uuid'] ?? null,
+        ];
+
+        foreach (['cpf', 'nome_completo', 'email', 'senha', 'data_de_nascimento', 'apelido', 'endereco_uuid'] as $field) {
+            unset($data[$field]);
+        }
+
+        $guarded = ['uuid','usuario_criador_uuid','data_de_criacao','data_de_ultima_alteracao', 'usuario_uuid'];
+        foreach ($guarded as $g) unset($data[$g]);
+
+        // Validações básicas
+        $horta = $this->HortaService->findByUuid($data['horta_uuid'], $payloadUsuarioLogado);
+
+        if (!$horta) {
+            throw new Exception("Horta não encontrada");
+        }
+
         // Validar dados do usuário
         if (empty($usuarioData['email'])) {
             throw new Exception("Email é obrigatório para criar o usuário");

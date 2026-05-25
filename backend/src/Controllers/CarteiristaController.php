@@ -28,7 +28,7 @@ class CarteiristaController
         ];
 
         $carteiristas = $this->carteiristaService->findAllWhere($payloadUsuarioLogado);
-        $carteiristas->load('canteiros');
+        $carteiristas->load(['canteiros', 'usuario']);
         
         // Formatar resposta
         $carteiristasFormatados = [];
@@ -56,7 +56,7 @@ class CarteiristaController
             return $response->withStatus(404);
         }
         
-        $carteirista->load('canteiros');
+        $carteirista->load(['canteiros', 'usuario']);
 
         $carteiristaFormatado = $this->formatCarteirista($carteirista);
 
@@ -76,7 +76,7 @@ class CarteiristaController
         $data = (array)$request->getParsedBody();
         
         $carteirista = $this->carteiristaService->create($data, $payloadUsuarioLogado);
-        $carteirista->load('canteiros');
+        $carteirista->load(['canteiros', 'usuario']);
 
         $carteiristaFormatado = $this->formatCarteirista($carteirista);
 
@@ -102,7 +102,7 @@ class CarteiristaController
             return $response->withStatus(404);
         }
 
-        $carteirista->load('canteiros');
+        $carteirista->load(['canteiros', 'usuario']);
         $carteiristaFormatado = $this->formatCarteirista($carteirista);
 
         $response->getBody()->write(json_encode($carteiristaFormatado));
@@ -113,13 +113,18 @@ class CarteiristaController
     {
         return [
             'id' => $carteirista->uuid,
-            'nome_completo' => $carteirista->nome_completo,
-            'telefone' => $carteirista->telefone,
-            'cpf' => $carteirista->cpf,
-            'email' => $carteirista->email,
-            'endereco' => $carteirista->endereco_uuid,
-            'horta_vinculada' => $carteirista->horta_uuid,
             'usuario_uuid' => $carteirista->usuario_uuid,
+            'telefone' => $carteirista->telefone ?? null,
+            'usuario' => [
+                'uuid' => $carteirista->usuario->uuid ?? null,
+                'nome_completo' => $carteirista->usuario->nome_completo ?? null,
+                'cpf' => $carteirista->usuario->cpf ?? null,
+                'email' => $carteirista->usuario->email ?? null,
+                'endereco_uuid' => $carteirista->usuario->endereco_uuid ?? null,
+                'apelido' => $carteirista->usuario->apelido ?? null,
+                'data_de_nascimento' => $carteirista->usuario->data_de_nascimento ?? null,
+            ],
+            'horta_vinculada' => $carteirista->horta_uuid,
             'canteiros' => $carteirista->canteiros->map(function ($canteiro) {
                 return [
                     'uuid' => $canteiro->uuid,
