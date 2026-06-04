@@ -12,6 +12,8 @@ return function(RouteCollectorProxy $app){
         $group->get('/{uuid}', CarteiristaController::class.':get');
         $group->post('', CarteiristaController::class.':create');
         $group->put('/{uuid}', CarteiristaController::class.':update');
+        $group->patch('/{uuid}/ativar', CarteiristaController::class.':activate');
+        $group->patch('/{uuid}/desativar', CarteiristaController::class.':deactivate');
         $group->delete('/{uuid}', CarteiristaController::class.':delete');
     });
 };
