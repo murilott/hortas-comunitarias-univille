@@ -220,6 +220,81 @@ class CanteiristaService
     }
 
     /**
+     * Ativa o acesso do canteirista (libera o login do usuário vinculado).
+     *
+     * @param string $uuid UUID do canteirista
+     * @param array $payloadUsuarioLogado
+     * @return CanteiristaModel|null
+     */
+    public function ativar(string $uuid, array $payloadUsuarioLogado): ?CanteiristaModel
+    {
+        // TODO: Implementar verificação de permissões quando necessário
+        return $this->setStatusAcesso(
+            $uuid,
+            'ativo',
+            null,
+            null,
+            $payloadUsuarioLogado
+        );
+    }
+
+    /**
+     * Desativa o acesso do canteirista (bloqueia o login do usuário vinculado).
+     *
+     * @param string $uuid UUID do canteirista
+     * @param array $payloadUsuarioLogado
+     * @param string|null $motivo Motivo opcional do bloqueio
+     * @return CanteiristaModel|null
+     */
+    public function desativar(string $uuid, array $payloadUsuarioLogado, ?string $motivo = null): ?CanteiristaModel
+    {
+        // TODO: Implementar verificação de permissões quando necessário
+        return $this->setStatusAcesso(
+            $uuid,
+            'inativo',
+            date('Y-m-d H:i:s'),
+            $motivo,
+            $payloadUsuarioLogado
+        );
+    }
+
+    private function setStatusAcesso(
+        string $uuid,
+        string $status,
+        ?string $dataBloqueio,
+        ?string $motivo,
+        array $payloadUsuarioLogado
+    ): ?CanteiristaModel {
+        $canteirista = $this->CanteiristaRepository->findByUuid($uuid);
+
+        if (!$canteirista) {
+            return null;
+        }
+
+        if (empty($canteirista->usuario_uuid)) {
+            throw new Exception('Canteirista não possui usuário vinculado para alterar acesso');
+        }
+
+        $this->usuarioService->update(
+            $canteirista->usuario_uuid,
+            [
+                'status_de_acesso' => $status,
+                'data_bloqueio_acesso' => $dataBloqueio,
+                'motivo_bloqueio_acesso' => $motivo,
+            ],
+            $payloadUsuarioLogado['usuario_uuid'],
+            $payloadUsuarioLogado
+        );
+
+        // Atualiza o usuario_alterador_uuid do canteirista para refletir a ação.
+        $this->CanteiristaRepository->update($uuid, [
+            'usuario_alterador_uuid' => $payloadUsuarioLogado['usuario_uuid'],
+        ]);
+
+        return $this->CanteiristaRepository->findByUuid($uuid);
+    }
+
+    /**
      * Lista canteiristas aplicando os filtros recebidos via query string.
      *
      * @param array $filtros

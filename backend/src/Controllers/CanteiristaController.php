@@ -223,5 +223,67 @@ class CanteiristaController
         $response->getBody()->write(json_encode($estatisticas));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     }
+
+    /**
+     * PATCH /canteiristas/{uuid}/ativar
+     *
+     * Reativa o acesso do canteirista (status_de_acesso = 'ativo' no usuário vinculado).
+     */
+    public function activate(Request $request, Response $response, array $args)
+    {
+        $payloadUsuarioLogado = [
+            'usuario_uuid' => $request->getAttribute('usuario_uuid'),
+            'cargo_uuid' => $request->getAttribute('cargo_uuid'),
+            'associacao_uuid' => $request->getAttribute('associacao_uuid'),
+            'horta_uuid' => $request->getAttribute('horta_uuid'),
+        ];
+
+        $canteirista = $this->CanteiristaService->ativar($args['uuid'], $payloadUsuarioLogado);
+
+        if (!$canteirista) {
+            $response->getBody()->write(json_encode(['error' => 'Canteirista não encontrado']));
+            return $response->withStatus(404)->withHeader('Content-Type', 'application/json');
+        }
+
+        $canteirista->load(['canteiros', 'usuario']);
+        $response->getBody()->write(json_encode([
+            'message' => 'Canteirista ativado com sucesso',
+            'data' => $this->formatCanteirista($canteirista),
+        ]));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * PATCH /canteiristas/{uuid}/desativar
+     *
+     * Bloqueia o acesso do canteirista (status_de_acesso = 'inativo' no usuário vinculado).
+     * Body opcional: { "motivo": "string" }
+     */
+    public function deactivate(Request $request, Response $response, array $args)
+    {
+        $payloadUsuarioLogado = [
+            'usuario_uuid' => $request->getAttribute('usuario_uuid'),
+            'cargo_uuid' => $request->getAttribute('cargo_uuid'),
+            'associacao_uuid' => $request->getAttribute('associacao_uuid'),
+            'horta_uuid' => $request->getAttribute('horta_uuid'),
+        ];
+
+        $body = (array) ($request->getParsedBody() ?? []);
+        $motivo = !empty($body['motivo']) ? (string) $body['motivo'] : null;
+
+        $canteirista = $this->CanteiristaService->desativar($args['uuid'], $payloadUsuarioLogado, $motivo);
+
+        if (!$canteirista) {
+            $response->getBody()->write(json_encode(['error' => 'Canteirista não encontrado']));
+            return $response->withStatus(404)->withHeader('Content-Type', 'application/json');
+        }
+
+        $canteirista->load(['canteiros', 'usuario']);
+        $response->getBody()->write(json_encode([
+            'message' => 'Canteirista desativado com sucesso',
+            'data' => $this->formatCanteirista($canteirista),
+        ]));
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    }
 }
 

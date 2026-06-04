@@ -12,6 +12,8 @@ return function(RouteCollectorProxy $app){
         $group->get('/{uuid}', CanteiristaController::class.':get');
         $group->post('', CanteiristaController::class.':create');
         $group->put('/{uuid}', CanteiristaController::class.':update');
+        $group->patch('/{uuid}/ativar', CanteiristaController::class.':activate');
+        $group->patch('/{uuid}/desativar', CanteiristaController::class.':deactivate');
         $group->delete('/{uuid}', CanteiristaController::class.':delete');
     });
 };
