@@ -1,5 +1,5 @@
 // Deleta um canteirista
-curl -X DELETE "http://localhost:8181/api/v1/carteiristas/07c6be44-4803-11f1-be15-9829a6e3b1e1" \
+curl -X DELETE "http://localhost:8181/api/v1/Canteiristas/07c6be44-4803-11f1-be15-9829a6e3b1e1" \
   -H "Authorization: Bearer 
     eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvX3V1aWQiOiJkMzEzOTlmMC00N2VmLTExZjEtYmJhMi05ODI5YTZlM2IxZTEiLCJjYXJnb191dWlkIjoiZDI1NjQ1MzMtNDdlZi0xMWYxLWJiYTItOTgyOWE2ZTNiMWUxIiwiYXNzb2NpYWNhb191dWlkIjpudWxsLCJob3J0YV91dWlkIjpudWxsLCJleHAiOjE3Nzc5MzE5Mzh9.m3ameaCw46Q_jHffFugtGgqofeZjt1D1hPzDi6FmceU
     "

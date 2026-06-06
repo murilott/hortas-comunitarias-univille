@@ -29,7 +29,7 @@ curl -X POST http://localhost:8181/api/v1/sessoes/cadastro \
 
 // Cria um canteirista
 
-curl -X POST "http://localhost:8181/api/v1/carteiristas" \
+curl -X POST "http://localhost:8181/api/v1/Canteiristas" \
   -H "Authorization: Bearer 
     eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvX3V1aWQiOiJlYjNhODJhMS01NmZkLTExZjEtODZlNS05ODI5YTZlM2IxZTEiLCJjYXJnb191dWlkIjoiZWE3ZTNkZmMtNTZmZC0xMWYxLTg2ZTUtOTgyOWE2ZTNiMWUxIiwiYXNzb2NpYWNhb191dWlkIjpudWxsLCJob3J0YV91dWlkIjpudWxsLCJleHAiOjE3Nzk1ODYxMjZ9.lOmyNA0ncveQ9ILMJT5trXdSeaPILn1uvD7Iev5zsgU
     " \

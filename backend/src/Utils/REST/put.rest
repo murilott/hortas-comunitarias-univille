@@ -1,5 +1,5 @@
 // Atualiza um canteirista
-curl -X PUT "http://localhost:8181/api/v1/carteiristas/4f39c81c-5707-11f1-a047-9829a6e3b1e1" \
+curl -X PUT "http://localhost:8181/api/v1/Canteiristas/4f39c81c-5707-11f1-a047-9829a6e3b1e1" \
   -H "Authorization: Bearer 
     eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3VhcmlvX3V1aWQiOiJlYjNhODJhMS01NmZkLTExZjEtODZlNS05ODI5YTZlM2IxZTEiLCJjYXJnb191dWlkIjoiZWE3ZTNkZmMtNTZmZC0xMWYxLTg2ZTUtOTgyOWE2ZTNiMWUxIiwiYXNzb2NpYWNhb191dWlkIjpudWxsLCJob3J0YV91dWlkIjpudWxsLCJleHAiOjE3Nzk1OTIwMjF9.yAQ-jVN7C6lLxKY2BRRBImCqxyBy78CH9metxoZyOvk
     " \
