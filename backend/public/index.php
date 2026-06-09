@@ -68,7 +68,6 @@ $routes($app);
 // Nota: Middlewares são executados em ordem INVERSA (LIFO - Last In, First Out)
 // Por isso, JwtMiddleware vem por último aqui (será executado primeiro)
 $app->addBodyParsingMiddleware();
-$app->addErrorMiddleware(true, true, true);
 $app->add(ForcarJsonMiddleware::class);
 $app->add(FormatadorDeErrosMiddleware::class);
 // $app->add(RoutePermissionMiddleware::class); // ← Desabilitado temporariamente (sistema de permissões)

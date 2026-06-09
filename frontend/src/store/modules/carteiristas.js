@@ -70,10 +70,12 @@ const actions = {
       commit('ADD_CARTEIRISTA', res.data)
       return { success: true, data: res.data }
     } catch (err) {
-      return {
-        success: false,
-        message: err.response?.data?.detail || 'Erro ao criar carteirista'
-      }
+      const data = err.response?.data
+      const details = data?.details
+      const message = details
+        ? Object.values(details).join('; ')
+        : (data?.error || 'Erro ao criar carteirista')
+      return { success: false, message, details: details || null }
     }
   },
   async updateCarteirista({ commit }, { id, data }) {
