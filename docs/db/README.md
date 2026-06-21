@@ -11,9 +11,11 @@
   - [Hortas](#3-hortas--bdhortas)
   - [Endereços](#4-endereços--bdenderecos)
   - [Canteiros](#5-canteiros--bdcanteiros)
-  - [Canteiros e Usuários](#6-canteiros-e-usuários--bdcanteiros_e_usuarios)
-  - [Chaves](#7-chaves--bdchaves)
-  - [Fila de Usuários](#8-fila-de-usuários--bdfila_de_usuarios)
+  - [Canteiristas](#6-canteiristas--bdcanteiristas)
+  - [Canteiristas e Canteiros](#7-canteiristas-e-canteiros--bdcanteiristas_canteiros)
+  - [Canteiros e Usuários](#8-canteiros-e-usuários--bdcanteiros_e_usuarios)
+  - [Chaves](#9-chaves--bdchaves)
+  - [Fila de Usuários](#10-fila-de-usuários--bdfila_de_usuarios)
 - [📗 Tabelas para Controle de Acesso a Recursos | RBAC Híbrido](#tabelas-para-controle-de-acesso-a-recursos--rbac-híbrido)
   - [Cargos](#1-cargos--bdcargos)
   - [Permissões](#2-permissões--bdpermissoes)
@@ -224,7 +226,61 @@ A tabela de canteiros foi modificada para suportar múltiplos proprietários por
 
 ---
 
-## 6. CANTEIROS E USUÁRIOS | `bd.canteiros_e_usuarios`
+## 6. CANTEIRISTAS | `bd.canteiristas`
+
+Representa o perfil de canteirista dentro de uma horta. O canteirista fica vinculado a um usuário da plataforma e pode ser associado a um ou mais canteiros pela tabela `canteiristas_canteiros`.
+
+| Nome do Campo | Nome da Coluna | Tipo | Observação |
+| --- | --- | --- | --- |
+| UUID | uuid | CHAR(36) | Chave primária |
+| Horta UUID | horta_uuid | CHAR(36) NOT NULL | UUID da horta à qual o canteirista pertence |
+| Usuário UUID | usuario_uuid | CHAR(36) | UUID do usuário vinculado ao canteirista |
+| Telefone | telefone | VARCHAR(20) | Telefone de contato |
+| Ativo | ativo | TINYINT DEFAULT 1 | Status ativo/inativo do canteirista |
+| Excluído | excluido | TINYINT DEFAULT 0 | Exclusão lógica |
+| Usuário Criador | usuario_criador_uuid | CHAR(36) | UUID do usuário que criou |
+| Data de Criação | data_de_criacao | TIMESTAMP DEFAULT CURRENT_TIMESTAMP | Data/hora da criação |
+| Usuário Alterador | usuario_alterador_uuid | CHAR(36) | UUID do último usuário que alterou |
+| Data de Última Alteração | data_de_ultima_alteracao | TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | Data/hora da última alteração |
+| Usuário Anterior | usuario_anterior_uuid | CHAR(36) | UUID do usuário anteriormente vinculado ao canteirista |
+
+### Relacionamentos de CANTEIRISTAS:
+- **horta_uuid** → hortas.uuid (N:1)
+- **usuario_uuid** → usuarios.uuid (N:1)
+- **usuario_criador_uuid** → usuarios.uuid (N:1)
+- **usuario_alterador_uuid** → usuarios.uuid (N:1)
+- **usuario_anterior_uuid** → usuarios.uuid (N:1)
+
+---
+
+## 7. CANTEIRISTAS E CANTEIROS | `bd.canteiristas_canteiros`
+
+Tabela de vínculo N:N entre canteiristas e canteiros. Permite que um canteirista fique responsável por múltiplos canteiros e que os vínculos sejam ativados, desativados ou excluídos logicamente.
+
+| Nome do Campo | Nome da Coluna | Tipo | Observação |
+| --- | --- | --- | --- |
+| UUID | uuid | CHAR(36) | Chave primária |
+| Canteirista UUID | canteirista_uuid | CHAR(36) NOT NULL | UUID do canteirista |
+| Canteiro UUID | canteiro_uuid | CHAR(36) NOT NULL | UUID do canteiro |
+| Ativo | ativo | TINYINT DEFAULT 1 | Status ativo/inativo do vínculo |
+| Excluído | excluido | TINYINT DEFAULT 0 | Exclusão lógica |
+| Usuário Criador | usuario_criador_uuid | CHAR(36) | UUID do usuário que criou |
+| Data de Criação | data_de_criacao | TIMESTAMP DEFAULT CURRENT_TIMESTAMP | Data/hora da criação |
+| Usuário Alterador | usuario_alterador_uuid | CHAR(36) | UUID do último usuário que alterou |
+| Data de Última Alteração | data_de_ultima_alteracao | TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | Data/hora da última alteração |
+
+### Constraints de CANTEIRISTAS E CANTEIROS:
+- **unique_canteirista_canteiro** (`canteirista_uuid`, `canteiro_uuid`) impede vínculo duplicado entre o mesmo canteirista e o mesmo canteiro.
+
+### Relacionamentos de CANTEIRISTAS E CANTEIROS:
+- **canteirista_uuid** → canteiristas.uuid (N:1)
+- **canteiro_uuid** → canteiros.uuid (N:1)
+- **usuario_criador_uuid** → usuarios.uuid (N:1)
+- **usuario_alterador_uuid** → usuarios.uuid (N:1)
+
+---
+
+## 8. CANTEIROS E USUÁRIOS | `bd.canteiros_e_usuarios`
 
 Tabela de vínculo N:N entre canteiros e usuários, permitindo copropriedade de canteiros.
 
@@ -251,7 +307,7 @@ Tabela de vínculo N:N entre canteiros e usuários, permitindo copropriedade de 
 - **usuario_criador_uuid** → usuarios.uuid (N:1)
 - **usuario_alterador_uuid** → usuarios.uuid (N:1)
 
-## 7. CHAVES | `bd.chaves`
+## 9. CHAVES | `bd.chaves`
 
 Tabela de vínculo N:N entre chaves e usuários, representa as chaves físicas da horta.
 
@@ -274,7 +330,7 @@ Tabela de vínculo N:N entre chaves e usuários, representa as chaves físicas d
 - **usuario_criador_uuid** → usuarios.uuid (N:1)
 - **usuario_alterador_uuid** → usuarios.uuid (N:1)
 
-## 8 FILA DE USUÁRIOS | `bd.fila_de_usuarios`
+## 10 FILA DE USUÁRIOS | `bd.fila_de_usuarios`
 
 Representa fila para entrar na horta.
 
@@ -426,6 +482,8 @@ enum Modulos: int
     case RECURSOS_DO_PLANO = 16;
     case CHAVES = 17;
     case FILA_DE_USUARIO = 18;
+    case CANTEIRISTAS = 20;
+    case CANTEIRISTAS_CANTEIROS = 21;
 }
 ```
 
@@ -732,5 +790,7 @@ Futuramente vamos revisitar essa seção para ver como isso auxilia o uso do Red
 ## Validações de Negócio:
 - Usuários dependentes não podem ter taxa de associado
 - Canteiros devem ter pelo menos um proprietário principal ativo
+- Canteiristas devem estar vinculados a uma horta e, quando houver usuário associado, esse usuário deve existir em `bd.usuarios`
+- O mesmo canteirista não pode ter vínculo duplicado com o mesmo canteiro em `bd.canteiristas_canteiros`
 - Soma dos percentuais de responsabilidade em canteiros não deve exceder 100%
 - Status de acesso deve ser validado contra mensalidades em dia
