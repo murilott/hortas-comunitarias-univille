@@ -64,6 +64,23 @@
 
   <li>
     <details>
+      <summary><a href="#canteiristas">📘 Canteiristas</a></summary>
+      <ul>
+        <li><a href="#canteiristas-get-list">📗 GET List</a></li>
+        <li><a href="#canteiristas-get-filtro">📗 GET Filtro</a></li>
+        <li><a href="#canteiristas-get-estatisticas">📗 GET Estatísticas</a></li>
+        <li><a href="#canteiristas-get-uuid">📗 GET por UUID</a></li>
+        <li><a href="#canteiristas-post">📗 POST</a></li>
+        <li><a href="#canteiristas-put">📗 PUT</a></li>
+        <li><a href="#canteiristas-patch-ativar">📗 PATCH Ativar</a></li>
+        <li><a href="#canteiristas-patch-desativar">📗 PATCH Desativar</a></li>
+        <li><a href="#canteiristas-delete">📗 DELETE</a></li>
+      </ul>
+    </details>
+  </li>
+
+  <li>
+    <details>
       <summary><a href="#cargos">📘 Cargos</a></summary>
       <ul>
         <li><a href="#cargos-get-list">📗 GET List</a></li>
@@ -1011,6 +1028,313 @@ Retorna `true` em caso de sucesso.
 | Administração da Horta      | Pode excluir apenas canteiros da sua horta.                |
 | Canteirista                 | Sem permissão.                                             |
 | Dependente                  | Sem permissão.                                             |
+
+<h2 id="canteiristas">📗 Canteiristas</h2>
+
+Gerencia os perfis de canteiristas vinculados a usuários da plataforma, incluindo vínculo com horta, vínculo com canteiros, ativação/desativação de acesso e consultas filtradas.
+
+> Observação: dados pessoais e de autenticação (`nome_completo`, `cpf`, `email`, `senha`, `data_de_nascimento`, `apelido`, `endereco_uuid`) são persistidos na tabela `usuarios`. A tabela `canteiristas` mantém o perfil do canteirista e referencia esse usuário por `usuario_uuid`.
+
+---
+
+<h3 id="canteiristas-get-list">📗 Canteiristas (GET)</h3>
+
+Lista todos os canteiristas disponíveis para o usuário logado.
+
+**🟢 Endpoint**
+
+`GET /Canteiristas`
+
+**🟢 Parâmetro na URL**
+
+Não se aplica.
+
+**🟢 Body da requisição**
+
+Não se aplica.
+
+**🟢 Body da resposta**
+
+Retorna uma lista de objetos com o formato abaixo:
+
+| Campo | Tipo | Obrigatório |
+| --- | --- | --- |
+| id | string | Sim |
+| usuario_uuid | string | Não |
+| telefone | string | Não |
+| ativo | boolean | Sim |
+| usuario.uuid | string | Não |
+| usuario.nome_completo | string | Não |
+| usuario.cpf | string | Não |
+| usuario.email | string | Não |
+| usuario.endereco_uuid | string | Não |
+| usuario.apelido | string | Não |
+| usuario.data_de_nascimento | date | Não |
+| horta_vinculada | string | Sim |
+| canteiros | array | Sim |
+
+Cada item em `canteiros` possui:
+
+| Campo | Tipo | Obrigatório |
+| --- | --- | --- |
+| uuid | string | Sim |
+| numero_identificador | string | Sim |
+| tamanho_m2 | decimal | Sim |
+| ativo | boolean | Sim |
+
+---
+
+<h3 id="canteiristas-get-filtro">📗 Canteiristas (GET Filtro)</h3>
+
+Lista canteiristas aplicando filtros via query string.
+
+**🟢 Endpoint**
+
+`GET /Canteiristas/filtro`
+
+**🟢 Query params**
+
+| Campo | Tipo | Obrigatório | Observação |
+| --- | --- | --- | --- |
+| nome_completo | string | Não | Filtra pelo nome do usuário vinculado |
+| cpf | string | Não | Filtra pelo CPF do usuário vinculado |
+| email | string | Não | Filtra pelo email do usuário vinculado |
+| telefone | string | Não | Filtra pelo telefone do canteirista |
+| horta_uuid | string | Não | Filtra pela horta vinculada |
+| com_canteiros | boolean | Não | `true` para canteiristas com canteiros vinculados, `false` para sem vínculo |
+| data_inicio | date | Não | Data inicial de criação |
+| data_fim | date | Não | Data final de criação |
+| ordenar_por | string | Não | `nome_completo`, `cpf`, `email`, `telefone`, `data_de_criacao` ou `data_de_ultima_alteracao` |
+| ordem | string | Não | `asc` ou `desc` |
+
+**🟢 Body da requisição**
+
+Não se aplica.
+
+**🟢 Body da resposta**
+
+| Campo | Tipo | Obrigatório |
+| --- | --- | --- |
+| total | int | Sim |
+| filtros_aplicados | object | Sim |
+| data | array | Sim |
+
+`data` retorna os mesmos objetos da listagem de canteiristas.
+
+---
+
+<h3 id="canteiristas-get-estatisticas">📗 Canteiristas (GET Estatísticas)</h3>
+
+Retorna estatísticas agregadas sobre canteiristas.
+
+**🟢 Endpoint**
+
+`GET /Canteiristas/estatisticas`
+
+**🟢 Query params**
+
+| Campo | Tipo | Obrigatório | Observação |
+| --- | --- | --- | --- |
+| meses | int | Não | Janela em meses para a série temporal. Padrão: `6` |
+
+**🟢 Body da requisição**
+
+Não se aplica.
+
+**🟢 Body da resposta**
+
+| Campo | Tipo |
+| --- | --- |
+| total | int |
+| com_canteiros_vinculados | int |
+| sem_canteiros_vinculados | int |
+| total_canteiros_vinculados | int |
+| media_canteiros_por_Canteirista | decimal |
+| por_horta | array |
+| por_mes | array |
+
+---
+
+<h3 id="canteiristas-get-uuid">📗 Canteiristas (GET por UUID)</h3>
+
+Busca um canteirista específico pelo UUID.
+
+**🟢 Endpoint**
+
+`GET /Canteiristas/{uuid}`
+
+**🟢 Parâmetro na URL**
+
+- `uuid` (obrigatório): UUID do canteirista
+
+**🟢 Body da requisição**
+
+Não se aplica.
+
+**🟢 Body da resposta**
+
+Retorna um objeto único com os mesmos campos da listagem.
+
+---
+
+<h3 id="canteiristas-post">📗 Canteiristas (POST)</h3>
+
+Cria um novo canteirista e o usuário vinculado.
+
+**🟢 Endpoint**
+
+`POST /Canteiristas`
+
+**🟢 Body da requisição**
+
+| Campo | Tipo | Obrigatório | Observação |
+| --- | --- | --- | --- |
+| horta_uuid | string | Sim | Horta vinculada ao canteirista |
+| telefone | string | Sim | Telefone de contato |
+| nome_completo | string | Sim | Salvo em `usuarios` |
+| cpf | string | Sim | Salvo em `usuarios` |
+| email | string | Sim | Salvo em `usuarios` |
+| senha | string | Sim | Salva em `usuarios` |
+| data_de_nascimento | date | Sim | Salva em `usuarios` |
+| apelido | string | Sim | Salvo em `usuarios` |
+| endereco_uuid | string | Não | Salvo em `usuarios` |
+| canteiros | array | Não | Lista de UUIDs de canteiros para vínculo inicial |
+
+Exemplo:
+
+```json
+{
+  "horta_uuid": "00000000-0000-0000-0000-000000000000",
+  "telefone": "(47) 99999-9999",
+  "nome_completo": "Maria Silva",
+  "cpf": "000.000.000-00",
+  "email": "maria@example.com",
+  "senha": "senha12345",
+  "data_de_nascimento": "1990-01-01",
+  "apelido": "Maria",
+  "endereco_uuid": "00000000-0000-0000-0000-000000000000",
+  "canteiros": [
+    "00000000-0000-0000-0000-000000000000"
+  ]
+}
+```
+
+**🟢 Body da resposta**
+
+Retorna o objeto criado com os mesmos campos da listagem.
+
+---
+
+<h3 id="canteiristas-put">📗 Canteiristas (PUT)</h3>
+
+Atualiza dados do canteirista, do usuário vinculado e, quando enviado, sincroniza os vínculos com canteiros.
+
+**🟢 Endpoint**
+
+`PUT /Canteiristas/{uuid}`
+
+**🟢 Parâmetro na URL**
+
+- `uuid` (obrigatório): UUID do canteirista
+
+**🟢 Body da requisição**
+
+| Campo | Tipo | Obrigatório | Observação |
+| --- | --- | --- | --- |
+| horta_uuid | string | Não | Horta vinculada ao canteirista |
+| telefone | string | Não | Telefone de contato |
+| nome_completo | string | Não | Atualiza `usuarios` |
+| cpf | string | Não | Atualiza `usuarios` |
+| email | string | Não | Atualiza `usuarios` |
+| senha | string | Não | Atualiza `usuarios` |
+| data_de_nascimento | date | Não | Atualiza `usuarios` |
+| apelido | string | Não | Atualiza `usuarios` |
+| endereco_uuid | string | Não | Atualiza `usuarios` |
+| canteiros | array | Não | Lista de UUIDs de canteiros para sincronizar |
+
+**🟢 Body da resposta**
+
+Retorna o objeto atualizado com os mesmos campos da listagem.
+
+---
+
+<h3 id="canteiristas-patch-ativar">📗 Canteiristas (PATCH Ativar)</h3>
+
+Ativa o canteirista e libera o acesso do usuário vinculado.
+
+**🟢 Endpoint**
+
+`PATCH /Canteiristas/{uuid}/ativar`
+
+**🟢 Parâmetro na URL**
+
+- `uuid` (obrigatório): UUID do canteirista
+
+**🟢 Body da requisição**
+
+Não se aplica.
+
+**🟢 Body da resposta**
+
+| Campo | Tipo |
+| --- | --- |
+| message | string |
+| data | object |
+
+`data` retorna o objeto atualizado com os mesmos campos da listagem.
+
+---
+
+<h3 id="canteiristas-patch-desativar">📗 Canteiristas (PATCH Desativar)</h3>
+
+Desativa o canteirista e bloqueia o acesso do usuário vinculado.
+
+**🟢 Endpoint**
+
+`PATCH /Canteiristas/{uuid}/desativar`
+
+**🟢 Parâmetro na URL**
+
+- `uuid` (obrigatório): UUID do canteirista
+
+**🟢 Body da requisição**
+
+| Campo | Tipo | Obrigatório |
+| --- | --- | --- |
+| motivo | string | Não |
+
+**🟢 Body da resposta**
+
+| Campo | Tipo |
+| --- | --- |
+| message | string |
+| data | object |
+
+`data` retorna o objeto atualizado com os mesmos campos da listagem.
+
+---
+
+<h3 id="canteiristas-delete">📗 Canteiristas (DELETE)</h3>
+
+Exclui logicamente um canteirista.
+
+**🟢 Endpoint**
+
+`DELETE /Canteiristas/{uuid}`
+
+**🟢 Parâmetro na URL**
+
+- `uuid` (obrigatório): UUID do canteirista
+
+**🟢 Body da requisição**
+
+Não se aplica.
+
+**🟢 Body da resposta**
+
+| Campo | Tipo |
+| --- | --- |
+| message | string |
 
 <h2 id="cargos">📗 Cargos</h2>
 

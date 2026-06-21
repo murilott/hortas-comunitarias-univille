@@ -4,8 +4,6 @@
 
 🥑 [Documentação da API REST🔗](../docs/api/README.md)
 
-🥑 [Endpoints de Canteiristas🔗](./CANTEIRISTAS_ENDPOINTS.md)
-
 ## 💾 Setup Local Híbrido
 
 > Parte do setup com containers (banco MySQL e PhpMyAdmin) e API REST rodando localmente 
