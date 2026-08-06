@@ -29,7 +29,7 @@
         $canteiroBindings = require __DIR__ . '/canteiro_bindings.php';
         $canteiroBindings($containerBuilder);
 
-        $CanteiristaBindings = require __DIR__ . '/Canteirista_bindings.php';
+        $CanteiristaBindings = require __DIR__ . '/canteirista_bindings.php';
         $CanteiristaBindings($containerBuilder);
 
     $dependenteBindings = require __DIR__ . '/dependente_bindings.php';
